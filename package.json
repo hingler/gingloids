@@ -1,0 +1,22 @@
+{
+  "name": "why-uno",
+  "version": "1.0.0",
+  "description": "bilada gaming",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamieboy1337/why-uno.git"
+  },
+  "author": "jamieboy1337",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jamieboy1337/why-uno/issues"
+  },
+  "homepage": "https://github.com/jamieboy1337/why-uno#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
