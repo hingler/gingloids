@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/jamieboy1337/why-uno#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "chai": "^4.3.4",
+    "express": "^4.17.1",
+    "mocha": "^8.3.2"
   }
 }

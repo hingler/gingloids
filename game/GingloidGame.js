@@ -4,6 +4,9 @@ import { default as GingloidPlayer } from "./GingloidPlayer";
 import { CardColor, CardValue, GingloidCard } from "./GingloidCard";
 import { default as GingloidState } from "./GingloidState";
 
+import { default as DiscardPile } from "./cardpile/DiscardPile";
+import { default as DrawPile } from "./cardpile/DrawPile";
+
 
 class GingloidGame {
   constructor() {
@@ -21,10 +24,11 @@ class GingloidGame {
     this.gameStarted = false;
 
     // list of cards to be drawn -- last card is top of pile.
-    this.drawPile = [];
+    /** @type {DrawPile} */
+    this.drawPile = new DrawPile();
 
-    // discard pile for this game -- last card is top of pile.
-    this.discardPile = [];
+    /** @type {DiscardPile} */
+    this.discardPile = new DiscardPile();
 
     // the next player to go
     this.nextPlayer = 0;
@@ -65,19 +69,23 @@ class GingloidGame {
       if (CardColor.hasOwnProperty(color)) {
         for (let value in CardValue) {
           if (CardValue.hasOwnProperty(value)) {
-            this.drawPile.push(new GingloidCard(color, value, cardid++));
+            if (value === CardValue.WILD) {
+              // only relevant after a pick
+              continue;
+            }
+
+            this.drawPile.addCard(new GingloidCard(color, value, cardid++));
             if (value !== CardValue.ZERO
               && value !== CardValue.PICK
               && value !== CardValue.PICKFOUR) {
-                this.drawPile.push(new GingloidCard(color, value, cardid++));
+                this.drawPile.addCard(new GingloidCard(color, value, cardid++));
             }
           }
         }
       }
     }
     
-    // shuffling cards
-    shuffle(this.drawPile);
+    this.drawPile.shuffleDeck();
 
     // shuffle turn order
     shuffle(this.tokens);
@@ -90,7 +98,7 @@ class GingloidGame {
       }
     }
 
-    // game is ready!
+    this.prepareDiscardPile();
   }
 
   /**
@@ -113,11 +121,24 @@ class GingloidGame {
       });
     }
 
-    res.discard = this.discardPile.slice();
+    res.discard = this.discardPile.getCards();
     res.draw = this.drawPile.length;
     res.hand = this.players.get(token).getCards();
     return res;
     // players need names!
+  }
+
+  /**
+   * Prepares the discard pile.
+   */
+  prepareDiscardPile() {
+    let discard = this.drawPile.drawCard();
+    while (discard.value === CardValue.PICK || discard.value === CardValue.PICKFOUR) {
+      this.discardPile.forceDiscard(discard);
+      discard = this.drawPile.drawCard();
+    }
+
+    this.discardPile.forceDiscard(discard);
   }
 
   /**
@@ -140,20 +161,86 @@ class GingloidGame {
    */
   drawCard(token) {
     if (this.players.get(token)) {
-      this.players.get(token).addCard(this.drawPile.pop());
+      if (this.drawPile.empty()) {
+        for (let card in this.discardPile.getCards()) {
+          this.drawPile.addCard(card);
+        }
+
+        this.discardPile.clear();
+        this.drawPile.shuffleDeck();
+        this.prepareDiscardPile();
+      }
+
+      this.players.get(token).addCard(this.drawPile.drawCard());
+    }
+  }
+
+  advancePlayer() {
+    this.nextPlayer += (this.reversed ? -1 : 1);
+    while (this.nextPlayer < 0) {
+      this.nextPlayer += this.players.length;
+    } 
+    
+    while (this.nextPlayer >= this.players.length) {
+      this.nextPlayer -= this.players.length;
     }
   }
 
   /**
    * Called when a player plays a card.
    * @param {String} token - the token of the player playing the card
-   * @param {*} card - the card being played by the player
+   * @param {GingloidCard} card - the card being played by the player
+   * @param {Object} opts - additional options for cards.
+   * @param {CardColor} opts.color - if a color pick card is played, specifies which color should be used next.
+   * @returns true if the card played is considered valid, false otherwise.
    */
-  playCard(token, card) {
+  playCard(token, card, opts) {
     // verify that the token is associated with the player which is going next
+    if (this.getNextPlayer() !== token) {
+      return;
+    }
+
     // verify that the card is in that player's hand
-    // play the card
-    // handle its logic
-    // advance to the next player
+    let player = this.players.get(token);
+    let cardHand = player.findCardById(card.id);
+    if (!cardHand || cardHand.color !== card.color || cardHand.value != card.value) {
+      // user claimed to have a card they don't have.
+      return false;
+    }
+
+    // user has the card -- confirm that it can be discarded
+    if (this.discardPile.discard(card, opts)) {
+      // card can be discarded -- play is valid!
+      player.removeCard(card.id);
+  
+      // handle its logic
+      switch (card.value) {
+        case CardValue.SKIP:
+          this.nextPlayer += (this.reversed ? -1 : 1);
+          break;
+        case CardValue.REVERSE:
+          this.reversed = !this.reversed;
+          break;
+        case CardValue.DRAWTWO:
+          this.nextPlayer += (this.reversed ? -1 : 1);
+          this.drawCard(this.players.get(this.nextPlayer).token);
+          this.drawCard(this.players.get(this.nextPlayer).token);
+          // can you combo off of a draw two?
+          // i think its natural
+        case CardValue.PICKFOUR:
+          advancePlayer();
+          this.drawCard(this.players.get(this.nextPlayer).token);
+          this.drawCard(this.players.get(this.nextPlayer).token);
+          this.drawCard(this.players.get(this.nextPlayer).token);
+          this.drawCard(this.players.get(this.nextPlayer).token);
+          break;
+      }
+      
+      advancePlayer();
+      return true;
+    }
+  
+    // card could not be discarded -- invalid play
+    return false;
   }
 }

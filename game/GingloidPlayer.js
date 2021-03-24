@@ -30,30 +30,35 @@ class GingloidPlayer {
    * 
    * @param {CardColor} color - color of the card we are looking for in the user's hand.
    * @param {CardValue} value - value of the card we are looking for in the user's hand.
-   * @returns true if the card could be found, false otherwise.
+   * @returns {GingloidCard} the card if it could be found, and null otherwise.
    */
-  findCard(color, value) {
+  findCardByFields(color, value) {
     if (color.constructor.name != CardColor.name || value.constructor.name != CardValue.name) {
-      return false;
+      return null;
     }
 
     for (let card of this.cards) {
       if (card.color === color && card.value === value) {
-        return true;
+        return card;
       }
     }
 
     return false;
   }
 
-  findCard(id) {
+  /**
+   * Finds a card by its identifier.
+   * @param {Number} id - the identifier of our desired card 
+   * @returns {GingloidCard} the card if it exists, and null otherwise.
+   */
+  findCardById(id) {
     for (let card of this.cards) {
       if (card.id === id) {
-        return true;
+        return card;
       }
     }
 
-    return false;
+    return null;
   }
 
   getToken() {
@@ -71,30 +76,17 @@ class GingloidPlayer {
     }
   }
 
-  /**
-   * Removes the desired card from the hand.
-   * @param {CardColor} color - color of the card we are looking for in the user's hand.
-   * @param {CardValue} value - value of the card we are looking for in the user's hand.
-   * @returns true if the card could be removed, false otherwise.
-   */
-  removeCard(color, value) {
-    if (color.constructor.name != CardColor.name || value.constructor.name != CardValue.name) {
-      return false;
-    }
-    
+  removeCard(id) {
     for (let i = 0; i < this.cards.length; i++) {
       let card = this.cards[i];
-      // future problem: distinguishing between cards with the same content
-      // ideally, we would get a card at a particular index, see if it passes,
-      // and then specifically remove that index.
-      if (card.color === color && card.value === value) {
+      if (card.id === id) {
         this.cards.splice(i, 1);
         return true;
       }
     }
-
-    return false;
   }
+
+  
 
   /**
    * 

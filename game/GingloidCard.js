@@ -22,7 +22,8 @@ const CardValue = Object.freeze({
   REVERSE: "reverse",
   DRAWTWO: "+2",
   PICK: "pick",
-  PICKFOUR: "pick +4"
+  PICKFOUR: "pick +4",
+  WILD: "wild"  // only relevant after a pick
 });
 
 class GingloidCard {
