@@ -8,13 +8,21 @@
 // add a card to the user
 // get the number of cards held by the user
 
-import { UnoCard, CardColor, CardValue } from "./UnoCard";
+import { GingloidCard, CardColor, CardValue } from "./GingloidCard";
 import { default as generateId } from "./util/IDGenerator";
 
-class UnoPlayer {
-  constructor() {
+/**
+ * A single player in uno.
+ */
+class GingloidPlayer {
+  /**
+   * Creates a new GingloidPlayer.
+   * @param {String} name - name of the new player. 
+   */
+  constructor(name) {
     this.cards = [];
     this.token = generateId(16);
+    this.name = name;
     // token is 16 hex value
   }
   
@@ -38,6 +46,16 @@ class UnoPlayer {
     return false;
   }
 
+  findCard(id) {
+    for (let card of this.cards) {
+      if (card.id === id) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   getToken() {
     return this.token;
   }
@@ -49,7 +67,7 @@ class UnoPlayer {
    */
   addCard(color, value) {
     if (color.constructor.name == CardColor.name && value.constructor.name == CardValue.name) {
-      this.cards.push(new UnoCard(color, value));
+      this.cards.push(new GingloidCard(color, value));
     }
   }
 
@@ -102,9 +120,9 @@ class UnoPlayer {
   /**
    * @returns the number of cards in this player's hand.
    */
-  get length() {
+  get cardCount() {
     return this.cards.length;
   } 
 }
 
-module.exports = UnoPlayer;
+export default GingloidPlayer;
