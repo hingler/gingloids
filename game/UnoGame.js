@@ -1,4 +1,6 @@
-import {default as generateId } from "./util/IDGenerator.js";
+import { default as generateId } from "./util/IDGenerator";
+import { UnoPlayer } from "./UnoPlayer";
+import { CardColor, CardValue, UnoCard } from "./UnoCard";
 
 
 class UnoGame {

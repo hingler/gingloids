@@ -8,7 +8,7 @@
 // add a card to the user
 // get the number of cards held by the user
 
-import { UnoCard, CardColor, CardValue } from "./UnoCard.js";
+import { UnoCard, CardColor, CardValue } from "./UnoCard";
 import { default as generateId } from "./util/IDGenerator";
 
 class UnoPlayer {
