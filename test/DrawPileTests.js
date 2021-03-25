@@ -3,6 +3,14 @@ const DrawPile = require("../game/cardpile/DrawPile");
 const { GingloidCard, CardColor, CardValue } = require("../game/GingloidCard");
 
 describe("Draw pile", function() {
+  describe("Creating draw piles", function() {
+    it("Initializes properly", function() {
+      let pile = new DrawPile();
+      expect(pile.empty()).to.equal(true);
+      expect(pile.drawCard()).to.equal(null);
+    });
+  });
+
   describe("Modifying draw piles", function() {
     it("Can store and retrieve a card", function() {
       let pile = new DrawPile();
