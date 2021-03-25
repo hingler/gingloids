@@ -1,5 +1,5 @@
 {
-  "name": "why-uno",
+  "name": "gingloids",
   "version": "1.0.0",
   "description": "bilada gaming",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jamieboy1337/why-uno.git"
+    "url": "git+https://github.com/jamieboy1337/gingloids.git"
   },
   "author": "jamieboy1337",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jamieboy1337/why-uno/issues"
+    "url": "https://github.com/jamieboy1337/gingloids/issues"
   },
-  "homepage": "https://github.com/jamieboy1337/why-uno#readme",
+  "homepage": "https://github.com/jamieboy1337/gingloids#readme",
   "dependencies": {
     "chai": "^4.3.4",
     "express": "^4.17.1",
