@@ -8,8 +8,8 @@
 // add a card to the user
 // get the number of cards held by the user
 
-import { GingloidCard, CardColor, CardValue } from "./GingloidCard";
-import { default as generateId } from "./util/IDGenerator";
+const { GingloidCard, CardColor, CardValue } = require("./GingloidCard");
+const generateId = require("./util/IDGenerator");
 
 /**
  * A single player in uno.
@@ -117,4 +117,4 @@ class GingloidPlayer {
   } 
 }
 
-export default GingloidPlayer;
+module.exports = GingloidPlayer;

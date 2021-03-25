@@ -1,5 +1,5 @@
-import { CardColor, CardValue, GingloidCard } from "../GingloidCard"
-import { default as shuffle } from "../util/ShuffleArray"
+const { CardColor, CardValue, GingloidCard } = require("../GingloidCard");
+const shuffle = require("../util/ShuffleArray");
 
 /**
  *  Abstraction of a pile of cards.
@@ -46,4 +46,4 @@ class DrawPile {
   }
 };
 
-export default DrawPile;
+module.exports = DrawPile;

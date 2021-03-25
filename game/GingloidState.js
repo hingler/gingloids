@@ -9,4 +9,4 @@ class GingloidState {
   hand = [];
 };
 
-export default GingloidState;
+modules.export = GingloidState;

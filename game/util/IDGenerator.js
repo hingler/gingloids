@@ -9,4 +9,4 @@ function generateId(len) {
   }, "");
 }
 
-export default generateId;
+modules.export = generateId;

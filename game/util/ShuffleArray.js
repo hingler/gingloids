@@ -11,4 +11,4 @@ function shuffle(arr) {
   }
 }
 
-export default shuffle;
+module.exports = shuffle;

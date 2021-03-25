@@ -1,11 +1,11 @@
-import { default as generateId } from "./util/IDGenerator";
-import { default as shuffle } from "./util/ShuffleArray";
-import { default as GingloidPlayer } from "./GingloidPlayer";
-import { CardColor, CardValue, GingloidCard } from "./GingloidCard";
-import { default as GingloidState } from "./GingloidState";
+const generateId = require("./util/IDGenerator");
+const shuffle = require("./util/ShuffleArray");
+const GingloidPlayer = require("./GingloidPlayer");
+const { CardColor, CardValue, GingloidCard } = require("./GingloidCard");
+const GingloidState = require("./GingloidState");
 
-import { default as DiscardPile } from "./cardpile/DiscardPile";
-import { default as DrawPile } from "./cardpile/DrawPile";
+const DiscardPile = require("./cardpile/DiscardPile");
+const DrawPile = require("./cardpile/DrawPile");
 
 
 class GingloidGame {

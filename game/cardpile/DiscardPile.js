@@ -1,4 +1,4 @@
-import { CardColor, CardValue, GingloidCard } from "../GingloidCard"
+const { CardColor, CardValue, GingloidCard } = require("../GingloidCard");
 
 /**
  * Abstraction of our discard pile.
@@ -64,4 +64,4 @@ class DiscardPile {
   }
 };
 
-export default DiscardPile;
+module.exports = DiscardPile;
