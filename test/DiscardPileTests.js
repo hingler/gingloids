@@ -41,6 +41,14 @@ describe("Discard pile", function() {
       expect(pile.getCards().length).to.equal(4);
 
       // verify color change
+      expect(pile.discard(new GingloidCard(CardColor.BLUE, CardValue.ZERO, 15))).to.be.false;
+      expect(pile.getCards().length).to.equal(4);
+
+      // verify color change
+      expect(pile.discard(new GingloidCard(CardColor.RED, CardValue.ONE, 22))).to.be.false;
+      expect(pile.getCards().length).to.equal(4);
+
+      // verify color change
       expect(pile.discard(new GingloidCard(CardColor.GREEN, CardValue.ZERO, 6))).to.be.true;
       expect(pile.getCards().length).to.equal(5);
     });

@@ -1,13 +1,3 @@
-// uno players contain some number of cards
-// players draw cards
-// players have cards
-// players play cards :)
-
-// check if the user has a particular card
-// remove a card from the user
-// add a card to the user
-// get the number of cards held by the user
-
 const { GingloidCard, CardColor, CardValue } = require("./GingloidCard");
 const generateId = require("./util/IDGenerator");
 
