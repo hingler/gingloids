@@ -2,8 +2,7 @@ const { CardColor, CardValue, GingloidCard } = require("../GingloidCard");
 const shuffle = require("../util/ShuffleArray");
 
 /**
- *  Abstraction of a pile of cards.
- *  Contains some number of cards.
+ *  Abstraction of a stack of cards.
  */
 class DrawPile {
   constructor() {
