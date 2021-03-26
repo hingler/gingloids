@@ -9,4 +9,4 @@ function generateId(len) {
   }, "");
 }
 
-modules.export = generateId;
+module.exports = generateId;
