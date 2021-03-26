@@ -1,8 +1,6 @@
-const generateId = require("./util/IDGenerator");
 const shuffle = require("./util/ShuffleArray");
 const GingloidPlayer = require("./GingloidPlayer");
 const { CardColor, CardValue, GingloidCard } = require("./GingloidCard");
-const GingloidState = require("./GingloidState");
 
 const DiscardPile = require("./cardpile/DiscardPile");
 const DrawPile = require("./cardpile/DrawPile");
@@ -10,8 +8,6 @@ const DrawPile = require("./cardpile/DrawPile");
 
 class GingloidGame {
   constructor() {
-    // this game's token
-    this.token = generateId(8);
 
     // map between a token and a player
     /** @type {Map<String, GingloidPlayer>} */
@@ -103,33 +99,6 @@ class GingloidGame {
   }
 
   /**
-   * Returns information on the state of this uno game for a given player.
-   * @param {String} token - token of the player requesting info
-   * @returns {GingloidState} - the current state of the game.
-   */
-  getGameInfo(token) {
-    // verify that the token exists
-    if (!this.players.get(token)) {
-      return null;
-    }
-    
-    let res = new GingloidState();
-    res.name = this.players.get(token).name;
-    for (let player of this.players.values()) {
-      res.players.push({
-        "player": player.name,
-        "cardCount": player.cardCount
-      });
-    }
-
-    res.discard = this.discardPile.getCards();
-    res.draw = this.drawPile.length;
-    res.hand = this.players.get(token).getCards();
-    return res;
-    // players need names!
-  }
-
-  /**
    * Prepares the discard pile.
    */
   prepareDiscardPile() {
@@ -147,6 +116,10 @@ class GingloidGame {
    */
   getPlayers() {
     return this.players;
+  }
+
+  getDiscardPile() {
+    return this.discardPile;
   }
 
   /**
@@ -245,3 +218,5 @@ class GingloidGame {
     return false;
   }
 }
+
+module.exports.GingloidGame = GingloidGame;
