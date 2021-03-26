@@ -1,3 +1,6 @@
+const br = require("./conn/SocketBroker");
+const broker = new br.SocketBroker();
+
 const express = require('express');
 const ws = require("ws");
 
@@ -16,6 +19,7 @@ const port = 8080;
 const wss = new ws.Server({ noServer: true });
 wss.on("connection", (ws, req) => {
   console.log("new connection: " + req.headers['user-agent']);
+  broker.addSocket(ws);
   // pass the web socket to another function where we set up events, etc.
   //  - message: parse
   //  - close: handle
@@ -25,6 +29,11 @@ wss.on("connection", (ws, req) => {
 app.get("/", (req, res) => {
   res.send("hello:)");
 });
+
+app.get("/creategame", (req, res) => {
+  let gametoken = broker.createGame();
+  res.send(gametoken);
+})
 
 const server = app.listen(port, () => {
   console.log("fuck you");
