@@ -22,15 +22,15 @@ const CardValue = Object.freeze({
   REVERSE: "reverse",
   DRAWTWO: "+2",
   PICK: "pick",
-  PICKFOUR: "pick +4",
+  PICKFOUR: "pick+4",
   WILD: "wild"  // only relevant after a pick
 });
 
 class GingloidCard {
   /**
    * 
-   * @param {CardColor} color 
-   * @param {CardValue} value 
+   * @param {string} color 
+   * @param {string} value 
    * @param {Number} id - a unique identifier which can be used to differentiate the card.
    */
   constructor(color, value, id) {
