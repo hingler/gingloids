@@ -85,19 +85,20 @@ class GingloidGame {
       }
     }
     
+    // shuffle the deck
     this.drawPile.shuffleDeck();
 
     // shuffle turn order
     shuffle(this.tokens);
 
-    // give each player some number of cards
-    // TODO: make card count a var
     for (let i = 0; i < 7; i++) {
       for (let player of this.players.values()) {
-        player.addCard();
+        // give each player one card
+        player.addCard(this.drawPile.drawCard());
       }
     }
 
+    // draw from our draw pile to create the discard pile
     this.prepareDiscardPile();
   }
 
@@ -203,7 +204,7 @@ class GingloidGame {
     // verify that the card is in that player's hand
     let player = this.players.get(token);
     let cardHand = player.findCardById(card.id);
-    if (!cardHand || cardHand.color !== card.color || cardHand.value != card.value) {
+    if (!cardHand || cardHand.color !== card.color || cardHand.value !== card.value) {
       // user claimed to have a card they don't have.
       return false;
     }
@@ -216,27 +217,27 @@ class GingloidGame {
       // handle its logic
       switch (card.value) {
         case CardValue.SKIP:
-          this.nextPlayer += (this.reversed ? -1 : 1);
+          this.advancePlayer();
           break;
         case CardValue.REVERSE:
           this.reversed = !this.reversed;
           break;
         case CardValue.DRAWTWO:
-          this.nextPlayer += (this.reversed ? -1 : 1);
-          this.drawCard(this.players.get(this.nextPlayer).token);
-          this.drawCard(this.players.get(this.nextPlayer).token);
+          this.advancePlayer();
+          this.drawCard(this.tokens[this.nextPlayer]);
+          this.drawCard(this.tokens[this.nextPlayer]);
           // can you combo off of a draw two?
           // i think its natural
         case CardValue.PICKFOUR:
-          advancePlayer();
-          this.drawCard(this.players.get(this.nextPlayer).token);
-          this.drawCard(this.players.get(this.nextPlayer).token);
-          this.drawCard(this.players.get(this.nextPlayer).token);
-          this.drawCard(this.players.get(this.nextPlayer).token);
+          this.advancePlayer();
+          this.drawCard(this.tokens[this.nextPlayer]);
+          this.drawCard(this.tokens[this.nextPlayer]);
+          this.drawCard(this.tokens[this.nextPlayer]);
+          this.drawCard(this.tokens[this.nextPlayer]);
           break;
       }
       
-      advancePlayer();
+      this.advancePlayer();
       return true;
     }
   

@@ -1,5 +1,4 @@
 const { GingloidCard, CardColor, CardValue } = require("./GingloidCard");
-const generateId = require("./util/IDGenerator");
 
 /**
  * A single player in uno.
@@ -11,9 +10,7 @@ class GingloidPlayer {
    */
   constructor(name) {
     this.cards = [];
-    this.token = generateId(16);
     this.name = name;
-    // token is 16 hex value
   }
   
   /**
@@ -51,21 +48,19 @@ class GingloidPlayer {
     return null;
   }
 
-  getToken() {
-    return this.token;
+  /**
+   * Adds a card to this player's hand
+   * @param {GingloidCard} card - the card being added.
+   */
+  addCard(card) {
+    this.cards.push(card);
   }
 
   /**
-   * Adds a card to this player's hand/
-   * @param {CardColor} color - color of the card we are looking for in the user's hand.
-   * @param {CardValue} value - value of the card we are looking for in the user's hand.
+   * Removes a card from this player's hand, if it exists.
+   * @param {Number} id - the ID of the card being removed.
+   * @returns {Boolean} true if the card could be removed, false otherwise.
    */
-  addCard(color, value) {
-    if (color.constructor.name == CardColor.name && value.constructor.name == CardValue.name) {
-      this.cards.push(new GingloidCard(color, value));
-    }
-  }
-
   removeCard(id) {
     for (let i = 0; i < this.cards.length; i++) {
       let card = this.cards[i];
@@ -74,6 +69,8 @@ class GingloidPlayer {
         return true;
       }
     }
+
+    return false;
   }
 
   
