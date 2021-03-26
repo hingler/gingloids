@@ -1,7 +1,7 @@
 import * as WebSocket from "ws";
 import { ConnectionManager } from "./ConnectionManager"
 import generateId = require("../game/util/IDGenerator")
-import { GingloidGame } from "../game/GingloidGame";
+import { GingloidJoinGamePacket } from "../client/GingloidRequestFormat"
 
 /**
  * When new sockets are created, this class stores them temporarily before
@@ -40,6 +40,7 @@ class SocketBroker {
   addSocket(socket: WebSocket) {
     // add event which will handle sockets asynchronously when they appear
     socket.on("message", (data: string) => { this.socketOnMessage(data, socket) });
+    socket.on("close", () => { this.sockets.delete(socket) });
     this.sockets.add(socket);
   }
 
@@ -50,19 +51,28 @@ class SocketBroker {
    * @returns void.
    */
   private socketOnMessage(data: string, socket: WebSocket) {
+    if (data.length > 131072) { // 128k -- should be a reasonable upper bound for requests
+      socket.close(1009);
+      this.sockets.delete(socket);
+      return;
+    }
+
     let result = JSON.parse(data);
-    if (result && result['game']) {
+    // we should prevent this from being too large
+    if (result && result['game'] && result['name']) {
       let game = this.games.get(result['game']);
       if (game) {
+        game.addSocket(socket, result['name']);
         this.sockets.delete(socket);
-        game.addSocket(socket);
         return;
       }
     }
     
     // game is not valid
     socket.send("INVALID GAME CODE");
-    socket.close();
+    socket.close(1011);
     this.sockets.delete(socket);
   }
 }
+
+export { SocketBroker };
