@@ -30,6 +30,7 @@ enum DataType {
   STATE = "state",
   TOKEN = "token",
   READYINFO = "readyinfo",
+  GAMESTATE = "gamestate",
   ERROR = "error"
 }
 

@@ -35,6 +35,7 @@ class ConnectionManager {
     // configure the socket so that messages are handled correctly :)
     socket.on("message", (data: string) => { this.socketOnMessage(data, socket); })
     socket.on("close", () => { this.socketOnClose(socket); });
+    console.log("new socket configured for " + name + ":" + token);
   }
 
   socketOnMessage(data: string, socket: WebSocket) {
@@ -43,6 +44,7 @@ class ConnectionManager {
     // if valid: communicate game state to all clients
 
     let playerToken = this.sockets.get(socket);
+    console.log("received message from " + playerToken);
     if (!playerToken) {
       // what
       console.error("we have a socket which is not attached to a player token!!!");
@@ -53,6 +55,7 @@ class ConnectionManager {
       socket.close(1009);
       this.game.removePlayer(playerToken);
       this.sockets.delete(socket);
+      console.warn(playerToken + " closed for weird messages");
       this.updateClients();
     }
 
@@ -68,6 +71,7 @@ class ConnectionManager {
         type: DataType.ERROR,
         content: "invalid request sent to server"
       } as DataPacket);
+      console.warn("err: invalid request from " + playerToken);
     }
 
     if (res && res['ready']) {
@@ -117,7 +121,6 @@ class ConnectionManager {
 
           return;
         case "draw":
-
           if (this.game.drawCard(this.sockets.get(socket))) {
             this.updateClients();
           } else {
@@ -167,7 +170,7 @@ class ConnectionManager {
   updateClients() {
     for (let socket of this.sockets) {
       let packet : DataPacket;
-      packet.type = "gamestate";
+      packet.type = DataType.GAMESTATE;
       packet.content = this.getGameState(socket[1]);
       socket[0].send(JSON.stringify(packet));
     }

@@ -30,6 +30,7 @@ class SocketBroker {
     } while (this.games.has(id));
     
     this.games.set(id, new ConnectionManager());
+    console.log("Created new game with id " + id);
     return id;
   }
 
@@ -39,9 +40,14 @@ class SocketBroker {
    */
   addSocket(socket: WebSocket) {
     // add event which will handle sockets asynchronously when they appear
-    socket.on("message", (data: string) => { this.socketOnMessage(data, socket) });
+    socket.addEventListener("message", this.socketMessageCallback );
     socket.on("close", () => { this.sockets.delete(socket) });
     this.sockets.add(socket);
+  }
+
+  private socketMessageCallback(event) {
+    (event.target as WebSocket).removeEventListener("message", this.socketMessageCallback);
+    this.socketOnMessage(event.data, event.target as WebSocket);
   }
 
   /**
