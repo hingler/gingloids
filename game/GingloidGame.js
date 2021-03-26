@@ -54,6 +54,40 @@ class GingloidGame {
   }
 
   /**
+   * Removes a player based on their token.
+   * @param {string} playerToken - the token of the player being removed
+   * @returns true if the player was removed, false if they did not exist.
+   */
+  removePlayer(playerToken) {
+    // verify that the token exists
+    for (let i = 0; i < this.tokens.length; i++) {
+      if (playerToken === this.tokens[i]) {
+        // put their cards into the draw pile, and reshuffle.
+        let player = this.players.get(playerToken);
+        for (let card of player.cards) {
+          this.drawPile.addCard(card);
+        }
+        
+        this.drawPile.shuffleDeck();
+
+        // remove the player from the game
+        this.players.delete(playerToken);
+        // fix any erroneous game state (adjust next player, etc).
+        if (this.nextPlayer == i && this.reversed) {
+          this.advancePlayer();
+        } else if (this.nextPlayer > i) {
+          this.nextPlayer--;
+        }
+
+        this.tokens.splice(i, 1);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Starts a game of Gingloids.
    */
   startGame() {
@@ -118,6 +152,15 @@ class GingloidGame {
     return this.players;
   }
 
+  /**
+   * 
+   * @param {String} token - the token associated with the desired player.
+   * @returns the player if its exists -- otherwise, null.
+   */
+  getPlayer(token) {
+    return this.players.get(token);
+  }
+
   getDiscardPile() {
     return this.discardPile;
   }
@@ -135,8 +178,13 @@ class GingloidGame {
    */
   drawCard(token) {
     if (this.players.get(token)) {
+
+      if (this.getNextPlayer() !== token) {
+        return;
+      }
+
       if (this.drawPile.empty()) {
-        for (let card in this.discardPile.getCards()) {
+        for (let card of this.discardPile.getCards()) {
           this.drawPile.addCard(card);
         }
 
@@ -146,7 +194,10 @@ class GingloidGame {
       }
 
       this.players.get(token).addCard(this.drawPile.drawCard());
+      return true;
     }
+
+    return false;
   }
 
   advancePlayer() {
@@ -163,7 +214,7 @@ class GingloidGame {
   /**
    * Called when a player plays a card.
    * @param {String} token - the token of the player playing the card
-   * @param {GingloidCard} card - the card being played by the player
+   * @param {number} card - id of the card being played by the player
    * @param {Object} opts - additional options for cards.
    * @param {CardColor} opts.color - if a color pick card is played, specifies which color should be used next.
    * @returns true if the card played is considered valid, false otherwise.
@@ -177,18 +228,18 @@ class GingloidGame {
     // verify that the card is in that player's hand
     let player = this.players.get(token);
     let cardHand = player.findCardById(card.id);
-    if (!cardHand || cardHand.color !== card.color || cardHand.value !== card.value) {
+    if (!cardHand) {
       // user claimed to have a card they don't have.
       return false;
     }
 
     // user has the card -- confirm that it can be discarded
-    if (this.discardPile.discard(card, opts)) {
+    if (this.discardPile.discard(cardHand, opts)) {
       // card can be discarded -- play is valid!
-      player.removeCard(card.id);
+      player.removeCard(cardHand.id);
   
       // handle its logic
-      switch (card.value) {
+      switch (cardHand.value) {
         case CardValue.SKIP:
           this.advancePlayer();
           break;
