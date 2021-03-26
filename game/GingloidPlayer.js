@@ -9,6 +9,7 @@ class GingloidPlayer {
    * @param {String} name - name of the new player. 
    */
   constructor(name) {
+    /** @type {Array<GingloidCard>} */
     this.cards = [];
     this.name = name;
   }
