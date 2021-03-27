@@ -25,15 +25,13 @@ wss.on("connection", (ws, req) => {
   //  - close: handle
 });
 
-
-app.get("/", (req, res) => {
-  res.send("hello:)");
-});
-
 app.get("/creategame", (req, res) => {
   let gametoken = broker.createGame();
+  res.set("Content-type", "text/plain");
   res.send(gametoken);
-})
+});
+
+app.use(express.static("client"));
 
 const server = app.listen(port, () => {
   console.log("fuck you");

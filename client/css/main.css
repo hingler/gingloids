@@ -1,0 +1,108 @@
+.card-container {
+  display: block;
+  height: 0;
+  padding-top: 28%;
+  width: 20%;
+  position: relative;
+}
+
+.background {
+  background-image: url("../img/card-bg.png");
+  background-size: cover;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+}
+
+.yellow .background {
+  filter: hue-rotate(60deg) brightness(2.3) saturate(0.7);
+}
+
+.blue .background {
+  filter: hue-rotate(240deg);
+}
+
+.green .background {
+  filter: hue-rotate(120deg) brightness(1.6);
+}
+
+.card {
+  border: 2px solid black;
+  border-radius: 16px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.digit-container {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.digit-tl, .digit-br {
+  position: absolute;
+  font-size: 2em;
+  -webkit-text-stroke: 2px black;
+}
+
+.digit-tl {
+  top: 16px;
+  left: 16px;
+}
+
+.digit-br {
+  bottom: 16px;
+  right: 16px;
+}
+
+.red .digit-tl, .red .digit-br {
+  text-shadow: 2px 2px #ff5050;
+}
+
+.yellow .digit-tl, .yellow .digit-br {
+  text-shadow: 2px 2px #ffa600;
+}
+
+.blue .digit-tl, .blue .digit-br {
+  text-shadow: 2px 2px #006eff;
+}
+
+.green .digit-tl, .green .digit-br {
+  text-shadow: 2px 2px #3baa2c;
+}
+
+.digit-center {
+  position: relative;
+  margin: auto;
+  font-size: 1000%;
+  -webkit-text-stroke: 4px black;
+}
+
+.red .digit-center {
+  text-shadow: 6px 6px #ff5050;
+}
+
+.yellow .digit-center {
+  text-shadow: 6px 6px #ffa600;
+}
+
+.blue .digit-center {
+  text-shadow: 6px 6px #006eff;
+}
+
+.green .digit-center {
+  text-shadow: 6px 6px #3baa2c;
+}
+
+.digit-container {
+  font-family: sans-serif;
+  color: white;
+  font-weight: bolder;
+}
