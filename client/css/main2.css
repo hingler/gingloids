@@ -1,0 +1,54 @@
+body {
+font-family: roc-grotesk-wide, sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  height: 100%;
+  margin: 0;
+  overflow-y: hidden;
+  position: relative;
+}
+
+body.red {
+  background-color: #e01010;
+}
+
+body.yellow {
+  background-color: #ffa000;
+}
+
+body.blue {
+  background-color: #00a0e0;
+}
+
+body.green {
+  background-color: #10a020;
+}
+
+h1 {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+ul {
+  bottom: 0px;
+  font-size: 25vmin;
+  left: -3vmin;
+  line-height: 90%;
+  list-style: none;
+  margin-bottom: 0;
+  padding-left: 0;
+  position: absolute;
+}
+
+ul li {
+  color: rgba(0.0, 0.0, 0.0, 0.0);
+  -webkit-text-stroke: 1px #000;
+  transition-duration: 1s;
+  transition-timing-function: cubic-bezier(0.04, 0.84, 0.16, 0.96);
+  cursor: pointer;
+}
+
+ul li.selected {
+  color: #000;
+}
