@@ -1,36 +1,48 @@
+:root {
+  --bg-blue: #00a8f0;
+  --bg-green: #60ff50;
+  --bg-red: #ff4040;
+  --bg-yellow: #ffa000;
+}
+
 body {
-font-family: roc-grotesk-wide, sans-serif;
+  font-family: roc-grotesk-wide, sans-serif;
   font-weight: 600;
   font-style: normal;
   height: 100%;
   margin: 0;
-  overflow-y: hidden;
+  overflow: hidden;
   position: relative;
 }
 
-body.red {
-  background-color: #e01010;
+body.red, .red button {
+  background-color: var(--bg-red);
 }
 
-body.yellow {
-  background-color: #ffa000;
+body.yellow, .yellow button {
+  background-color: var(--bg-yellow);
 }
 
-body.blue {
-  background-color: #00a0e0;
+body.blue, .blue button {
+  background-color: var(--bg-blue);
 }
 
-body.green {
-  background-color: #10a020;
+body.green, .green button {
+  background-color: var(--bg-green);
 }
 
-h1 {
+#menu {
+  margin: 0;
+}
+
+#menu h1 {
+  margin-top: 0;
   position: absolute;
   top: 16px;
   right: 16px;
 }
 
-ul {
+#menu ul {
   bottom: 0px;
   font-size: 25vmin;
   left: -3vmin;
@@ -41,7 +53,7 @@ ul {
   position: absolute;
 }
 
-ul li {
+#menu ul li {
   color: rgba(0.0, 0.0, 0.0, 0.0);
   -webkit-text-stroke: 1px #000;
   transition-duration: 1s;
@@ -49,6 +61,110 @@ ul li {
   cursor: pointer;
 }
 
-ul li.selected {
+#menu ul li a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#menu ul li.selected {
   color: #000;
+}
+
+#joingame {
+  width: 0px;
+  height: 100%;
+  background-color: #000;
+  z-index: -1;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition-duration: 1.2s;
+  transition-timing-function: cubic-bezier(0.7, 0.0, 0.3, 1.0);
+}
+
+#joingame.transition {
+  width: 100%;
+}
+
+.bg-black {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#name-entry-container.blue {
+  color: var(--bg-blue);
+}
+
+#name-entry-container.yellow {
+  color: var(--bg-yellow);
+}
+
+#name-entry-container.red {
+  color: var(--bg-red);
+}
+
+#name-entry-container.green {
+  color: var(--bg-green);
+}
+
+h2 {
+  margin: 4px;
+  margin-left: 0;
+  font-weight: 400;
+  font-size: 1.4em;
+}
+
+#name-entry {
+  background-color: black;
+  border: 0;
+  margin: auto;
+  display: block;
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  font-family: "Roboto Mono";
+  font-size: 2em;
+  color: white;
+}
+
+#name-entry:focus {
+  outline: none;
+  border-bottom-color: white !important;
+}
+
+#name-entry-container {
+  position: relative;
+}
+
+#name-entry-container button {
+  margin: 0 auto;
+  margin-top: 16px;
+  width: 40%;
+  font-size: 1.2em;
+  border-radius: 0px;
+  border: 0;
+  font-family: "Roc Grotesk Wide";
+  font-weight: 600;
+  padding: 4px 0;
+  display: block;
+}
+
+.blue #name-entry {
+  border-bottom-color: var(--bg-blue);
+}
+
+.yellow #name-entry {
+  border-bottom-color: var(--bg-yellow);
+}
+
+.red #name-entry {
+  border-bottom-color: var(--bg-red);
+}
+
+.green #name-entry {
+  border-bottom-color: var(--bg-green);
 }
