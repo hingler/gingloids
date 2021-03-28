@@ -113,10 +113,11 @@ body.green, .green button {
 }
 
 h2 {
-  margin: 4px;
-  margin-left: 0;
-  font-weight: 400;
-  font-size: 1.4em;
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  font-size: 12vmin;
+  margin: 0;
 }
 
 #name-entry {
