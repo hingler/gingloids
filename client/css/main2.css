@@ -141,7 +141,7 @@ h2 {
   position: relative;
 }
 
-#name-entry-container button {
+button {
   margin: 0 auto;
   margin-top: 16px;
   width: 40%;
@@ -152,6 +152,34 @@ h2 {
   font-weight: 600;
   padding: 4px 0;
   display: block;
+}
+
+#ready-button {
+  width: 15%;
+  min-width: 120px;
+  padding: 6px 16px;
+}
+
+#ready-button.readied {
+  background-color: black;
+  color: white;
+  padding: 4px 14px;
+}
+
+.red #ready-button.readied {
+  border: 2px solid var(--bg-red);
+}
+
+.yellow #ready-button.readied {
+  border: 2px solid var(--bg-yellow);
+}
+
+.green #ready-button.readied {
+  border: 2px solid var(--bg-green);
+}
+
+.blue #ready-button.readied {
+  border: 2px solid var(--bg-blue);
 }
 
 .blue #name-entry {

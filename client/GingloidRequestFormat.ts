@@ -11,4 +11,8 @@ interface GingloidPlayCardPacket {
   }
 }
 
+interface GingloidReadyPacket {
+  ready: boolean;
+}
+
 export { GingloidJoinGamePacket, GingloidPlayCardPacket };

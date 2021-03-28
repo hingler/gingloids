@@ -10,6 +10,23 @@
   
     document.querySelector("body").classList.add(window.sessionStorage.getItem("color"));
     document.querySelector("#name-entry-container button").addEventListener("click", createWebSocket);
+  
+    let game = getId();
+    document.getElementById("game-id").textContent = game;
+  }
+
+  function getId() {
+    let game = "";
+    window.location.search.substr(1)
+      .split("&")
+      .forEach(function(e) {
+        let arg = e.split("=");
+        if (arg[0] === "id") {
+          game = arg[1];
+        }
+    });
+
+    return game;
   }
 
   /**
@@ -34,15 +51,7 @@
       name = "Default Daniel";
     }
 
-    let game = "";
-    window.location.search.substr(1)
-      .split("&")
-      .forEach(function(e) {
-        let arg = e.split("=");
-        if (arg[0] === "id") {
-          game = arg[1];
-        }
-    });
+    let game = getId();
 
     if (game.length === 0) {
       console.error("no game id found!");
@@ -59,7 +68,24 @@
       socket.addEventListener("message", socketHandleEvent);
       document.getElementById("ready-screen-container").classList.remove("hidden");
       document.getElementById("name-entry-container").classList.add("hidden");
+      // add event listener to button
+      document.getElementById("ready-button").addEventListener("click", readyUp);
     }
+  }
+
+  function readyUp() {
+    this.classList.toggle("readied");
+    if (this.classList.contains("readied")) {
+      this.textContent = "unready";
+    } else {
+      this.textContent = "ready";
+    }
+
+    let packet = {};
+    packet.ready = this.classList.contains("readied");
+
+    // send ready packet on socket
+    socket.send(JSON.stringify(packet));
   }
 
   /**
@@ -118,9 +144,6 @@
     }
 
     playerlist.appendChild(itemBox);
-
-    
-
     document.getElementById("player-count").textContent = "ready: " + playercount.toString(10) + "/" + content.length;
   }
 })();
