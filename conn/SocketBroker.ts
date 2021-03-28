@@ -1,6 +1,7 @@
 import * as WebSocket from "ws";
 import { ConnectionManager } from "./ConnectionManager"
 import generateId = require("../game/util/IDGenerator")
+import { DataPacket, DataType } from "../game/GingloidState"
 import { GingloidJoinGamePacket } from "../client/GingloidRequestFormat"
 
 /**
@@ -94,8 +95,12 @@ class SocketBroker {
     }
     
     // game is not valid
-    socket.send("INVALID GAME CODE");
+    socket.send(JSON.stringify({
+      type: DataType.ERROR,
+      content: "Provided ID is invalid."
+    }));
     socket.close(1011);
+    console.log("closing socket due to invalid id");
     this.sockets.delete(socket);
   }
 }
