@@ -18,7 +18,7 @@ class SocketBroker {
     this.games = new Map();
     this.sockets = new Set();
 
-    setInterval(this.cleanDeadGames, 60000);
+    setInterval(() => { this.cleanDeadGames() }, 60000);
   }
 
   cleanDeadGames() {
