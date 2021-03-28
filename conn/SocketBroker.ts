@@ -39,13 +39,15 @@ class SocketBroker {
    * @param socket - the socket being added
    */
   addSocket(socket: WebSocket) {
+    console.log("new socket");
     // add event which will handle sockets asynchronously when they appear
-    socket.addEventListener("message", this.socketMessageCallback );
+    socket.addEventListener("message", (e) => { this.socketMessageCallback(e) });
     socket.on("close", () => { this.sockets.delete(socket) });
     this.sockets.add(socket);
   }
 
   private socketMessageCallback(event) {
+    console.log("message from socket");
     (event.target as WebSocket).removeEventListener("message", this.socketMessageCallback);
     this.socketOnMessage(event.data, event.target as WebSocket);
   }
@@ -57,6 +59,7 @@ class SocketBroker {
    * @returns void.
    */
   private socketOnMessage(data: string, socket: WebSocket) {
+    console.log("new data: " + data);
     if (data.length > 131072) { // 128k -- should be a reasonable upper bound for requests
       socket.close(1009);
       this.sockets.delete(socket);
@@ -64,10 +67,12 @@ class SocketBroker {
     }
 
     let result = JSON.parse(data);
+    console.log(result);
     // we should prevent this from being too large
     if (result && result['game'] && result['name']) {
       let game = this.games.get(result['game']);
       if (game) {
+        console.log("new player: " + result['name']);
         game.addSocket(socket, result['name']);
         this.sockets.delete(socket);
         return;
