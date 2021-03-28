@@ -141,6 +141,26 @@ h2 {
   position: relative;
 }
 
+.link-info {
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: right;
+  font-size: 0.6em;
+  padding: 16px 16px;
+  line-height: 80%;
+  z-index: 5;
+}
+
+.link-info, #error-container p {
+  color: white;
+}
+
+p {
+  font-family: "Roboto Mono", sans-serif;
+  font-weight: 400;
+}
+
 button {
   margin: 0 auto;
   margin-top: 16px;
@@ -148,7 +168,7 @@ button {
   font-size: 1.2em;
   border-radius: 0px;
   border: 0;
-  font-family: "Roc Grotesk Wide";
+  font-family: "Roc Grotesk Wide", sans-serif;
   font-weight: 600;
   padding: 4px 0;
   display: block;

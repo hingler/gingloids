@@ -100,6 +100,11 @@
       case "readyinfo":
         console.log("READYINFO");
         updateReadyState(packet.content);
+        break;1
+      case "error":
+        console.warn("Error occured.");
+        handleError(packet.content);
+        break;
     }
   }
 
@@ -145,5 +150,16 @@
 
     playerlist.appendChild(itemBox);
     document.getElementById("player-count").textContent = "ready: " + playercount.toString(10) + "/" + content.length;
+  }
+
+  function handleError(content) {
+    console.error(content);
+    socket.close();
+    document.querySelector("#error-container p").textContent = content;
+    for (let divider of document.querySelectorAll(".bg-black")) {
+      divider.classList.add("hidden");
+    }
+
+    document.getElementById("error-container").classList.remove("hidden");
   }
 })();
