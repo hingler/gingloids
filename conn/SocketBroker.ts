@@ -29,7 +29,7 @@ class SocketBroker {
       id = generateId(8);
     } while (this.games.has(id));
     
-    this.games.set(id, new ConnectionManager());
+    this.games.set(id, new ConnectionManager(id));
     console.log("Created new game with id " + id);
     return id;
   }

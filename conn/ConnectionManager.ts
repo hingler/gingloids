@@ -16,11 +16,13 @@ class ConnectionManager {
   game: GingloidGame;
   sockets: Map<WebSocket, string>;
   ready: Map<string, boolean>;
+  token: string;
 
-  constructor() {
+  constructor(token: string) {
     this.game = new GingloidGame();
     this.sockets = new Map();
     this.ready = new Map();
+    this.token = token;
   }
 
   addSocket(socket: WebSocket, name: string) {
@@ -77,8 +79,14 @@ class ConnectionManager {
     if (res && res['ready']) {
       if (!this.game.gameStarted) {
         // mark this player as ready
+        console.log("player " + playerToken + " readied up in game " + this.token);
+        // should pass this its own token
         this.ready.set(playerToken, res['ready']);
         this.sendReadyState();
+        if (this.ready.size < 2) {
+          // don't start the game if we have less than two players
+          return;
+        }
         for (let r of this.ready.values()) {
           if (!r) {
             // bail if not everyone is ready
