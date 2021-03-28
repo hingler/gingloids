@@ -12,12 +12,19 @@
   <script src="js/game.js"></script>
 </head>
 <body>
-  <section class="bg-black" id="name-entry-container">
-    <h2>name entry</h2>
-    <div>
-      <input type="text" id="name-entry"/>
-      <button>confirm</button>
-    </div>
-  </section>
+  <div class="bg-black" id="name-entry-container">
+    <section class="name">
+      <h2>name entry</h2>
+      <div>
+        <input type="text" id="name-entry"/>
+        <button>confirm</button>
+      </div>
+    </section>
+  </div>
+  <div class="bg-black hidden" id="ready-screen-container">
+    <section id="player-list">
+    </section>
+    <h2 id="player-count">connecting</h2>
+  </div>
 </body>
 </html>

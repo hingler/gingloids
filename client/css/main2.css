@@ -96,19 +96,19 @@ body.green, .green button {
   justify-content: center;
 }
 
-#name-entry-container.blue {
+.blue h2 {
   color: var(--bg-blue);
 }
 
-#name-entry-container.yellow {
+.yellow h2 {
   color: var(--bg-yellow);
 }
 
-#name-entry-container.red {
+.red h2  {
   color: var(--bg-red);
 }
 
-#name-entry-container.green {
+.green h2  {
   color: var(--bg-green);
 }
 
@@ -168,4 +168,38 @@ h2 {
 
 .green #name-entry {
   border-bottom-color: var(--bg-green);
+}
+
+.hidden {
+  display: none;
+}
+
+#player-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.ready-state-pair {
+  width: 60%;
+  display: flex;
+  margin-bottom: 2px;
+}
+
+.ready-state {
+  display: inline-block;
+  color: white;
+  margin: 0 2px;
+  width: 100%;
+  background-color: black;
+  border: 2px solid white;
+  text-align: center;
+}
+
+.ready-state.ready {
+  color: black;
+  background-color: white;
 }
