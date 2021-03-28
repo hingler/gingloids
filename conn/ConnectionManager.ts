@@ -67,6 +67,7 @@ class ConnectionManager {
 
     // the socket is playing some card
     let res = JSON.parse(data);
+    console.log(res);
     // handle ready signal
 
     if (!res) {
@@ -77,7 +78,7 @@ class ConnectionManager {
       console.warn("err: invalid request from " + playerToken);
     }
 
-    if (res && res['ready']) {
+    if (res && res.ready !== undefined) {
       if (!this.game.gameStarted) {
         // mark this player as ready
         console.log("player " + playerToken + " readied up in game " + this.token);
@@ -86,8 +87,10 @@ class ConnectionManager {
         this.sendReadyState();
         if (this.ready.size < 2) {
           // don't start the game if we have less than two players
+          console.log("not enough players");
           return;
         }
+
         for (let r of this.ready.values()) {
           if (!r) {
             // bail if not everyone is ready
@@ -115,17 +118,17 @@ class ConnectionManager {
               this.updateClients();
             } else {
               // formatting was valid, but it is not the user's turn
-              socket.send({
+              socket.send(JSON.stringify({
                 type: DataType.ERROR,
                 content: "it's not your turn :("
-              } as DataPacket);
+              } as DataPacket));
             }
           } else {
             // invalid format
-            socket.send({
+            socket.send(JSON.stringify({
               type: DataType.ERROR,
               content: "invalid input"
-            } as DataPacket);
+            } as DataPacket));
           }
 
           return;
@@ -134,20 +137,21 @@ class ConnectionManager {
             this.updateClients();
           } else {
             // not the player's turn to draw.
-            socket.send({
+            socket.send(JSON.stringify({
               type: DataType.ERROR,
               content: "it's not your turn :("
-            } as DataPacket);
+            } as DataPacket));
           }
 
           return;
       }
     }
 
-    socket.send({
+    console.log("bad input from player " + this.sockets.get(socket));
+    socket.send(JSON.stringify({
       type: DataType.ERROR,
       content: "invalid input"
-    } as DataPacket);
+    } as DataPacket));
   }
 
   socketOnClose(socket: WebSocket) {
