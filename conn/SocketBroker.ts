@@ -17,6 +17,16 @@ class SocketBroker {
   constructor() {
     this.games = new Map();
     this.sockets = new Set();
+
+    setInterval(this.cleanDeadGames, 60000);
+  }
+
+  cleanDeadGames() {
+    for (let game of this.games) {
+      if (game[1].sockets.size <= 0) {
+        this.games.delete(game[0]);
+      }
+    }
   }
 
   /**
