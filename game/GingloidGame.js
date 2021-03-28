@@ -97,18 +97,19 @@ class GingloidGame {
     let cardid = 0;
     for (let color in CardColor) {
       if (CardColor.hasOwnProperty(color)) {
+        let col = CardColor[color];
         for (let value in CardValue) {
           if (CardValue.hasOwnProperty(value)) {
-            if (value === CardValue.WILD) {
-              // only relevant after a pick
+            let str = CardValue[value];
+            if (str === CardValue.WILD) {
               continue;
             }
 
-            this.drawPile.addCard(new GingloidCard(color, value, cardid++));
-            if (value !== CardValue.ZERO
-              && value !== CardValue.PICK
-              && value !== CardValue.PICKFOUR) {
-                this.drawPile.addCard(new GingloidCard(color, value, cardid++));
+            this.drawPile.addCard(new GingloidCard(col, str, cardid++));
+            if (str !== CardValue.ZERO
+              && str !== CardValue.PICK
+              && str !== CardValue.PICKFOUR) {
+                this.drawPile.addCard(new GingloidCard(col, str, cardid++));
             }
           }
         }
@@ -117,7 +118,6 @@ class GingloidGame {
     
     // shuffle the deck
     this.drawPile.shuffleDeck();
-
     // shuffle turn order
     shuffle(this.tokens);
 
