@@ -5,7 +5,7 @@ interface GingloidState {
   name: string;
   players: Array<PlayerInfo>;
   discard: Array<CardInfo>;
-  draw: Number;
+  draw: number;
   hand: Array<CardInfo>;
 }
 
