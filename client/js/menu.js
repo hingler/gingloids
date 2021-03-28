@@ -21,13 +21,13 @@ function main() {
   let play = document.getElementById("play");
   play.addEventListener("click", function() {
     document.getElementById("joingame").classList.add("transition");
+    setTimeout(() => {
+      // redirect the user to the "game" page
+      // we'll get a game, send them to it, and then have them put in a name.
+      fetch("/creategame").then(verifyConnection).then(async (resp) => { sendToGame(await resp.text()) });
+    }, 2000);
   });
 
-  setTimeout(() => {
-    // redirect the user to the "game" page
-    // we'll get a game, send them to it, and then have them put in a name.
-    fetch("/creategame").then(verifyConnection).then(async (resp) => { sendToGame(await resp.text()) });
-  }, 2000);
 }
 
 function verifyConnection(resp) {
