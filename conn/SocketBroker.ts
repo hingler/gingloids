@@ -51,14 +51,18 @@ class SocketBroker {
   addSocket(socket: WebSocket) {
     console.log("new socket");
     // add event which will handle sockets asynchronously when they appear
-    socket.addEventListener("message", (e) => { this.socketMessageCallback(e) });
+    let func_ = (e) => {
+      this.socketMessageCallback(e);
+      socket.removeEventListener("message", func_);
+    };
+    
+    socket.addEventListener("message", func_);
     socket.on("close", () => { this.sockets.delete(socket) });
     this.sockets.add(socket);
   }
 
   private socketMessageCallback(event) {
     console.log("message from socket");
-    (event.target as WebSocket).removeEventListener("message", this.socketMessageCallback);
     this.socketOnMessage(event.data, event.target as WebSocket);
   }
 
