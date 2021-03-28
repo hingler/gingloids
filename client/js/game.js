@@ -8,7 +8,7 @@
       window.sessionStorage.setItem("color", colors[Math.floor(Math.random() * colors.length)]);
     }
   
-    document.getElementById("name-entry-container").classList.add(window.sessionStorage.getItem("color"));
+    document.querySelector("body").classList.add(window.sessionStorage.getItem("color"));
     document.querySelector("#name-entry-container button").addEventListener("click", createWebSocket);
   }
 
@@ -16,10 +16,8 @@
    * Creates the web socket used to communicate with the game server.
    */
   function createWebSocket() {
-    // create the web socket with our host
-    // send it the game, and our name
-    // set up responses and save it somewhere (idk where though :( )
     console.log("cool!");
+    document.querySelector("#name-entry-container button").removeEventListener("click", createWebSocket);
     let socketUrl = "";
     if (window.location.protocol === "https:") {
       socketUrl += "wss://";
@@ -28,6 +26,7 @@
     }
 
     socketUrl += window.location.host;
+    console.log(socketUrl);
     socket = new WebSocket(socketUrl);
     
     let name = document.getElementById("name-entry").value;
@@ -58,6 +57,8 @@
       };
 
       socket.addEventListener("message", socketHandleEvent);
+      document.getElementById("ready-screen-container").classList.remove("hidden");
+      document.getElementById("name-entry-container").classList.add("hidden");
     }
   }
 
@@ -78,10 +79,48 @@
 
   /**
    * Called whenever the socket receives an update pertaining to the ready state of players.
-   * @param {Array} content - an array of user names.
+   * @param {Array} content - an array of user names and their ready states.
    */
   function updateReadyState(content) {
     console.log(content);
     console.log("i was called");
+    let playercount = 0;
+    // create new elements somewhere
+    // update player count
+    let playerlist = document.getElementById("player-list");
+    while (playerlist.children.length) {
+      playerlist.removeChild(playerlist.children[0]);
+    }
+
+    let itemsInBox = 0;
+    let itemBox = document.createElement("div");
+    itemBox.classList.add("ready-state-pair");
+    for (let item of content) {
+      if (itemsInBox >= 2) {
+        playerlist.appendChild(itemBox);
+        itemBox = document.createElement("div");
+        itemBox.classList.add("ready-state-pair");
+        itemsInBox = 0;
+      }
+
+      let box = document.createElement("div");
+      let name = document.createElement("p");
+      box.classList.add("ready-state");
+      name.textContent = item.name;
+      box.appendChild(name);
+      itemBox.appendChild(box);
+      if (item.ready) {
+        playercount++;
+        box.classList.add("ready");
+      }
+
+      itemsInBox++;
+    }
+
+    playerlist.appendChild(itemBox);
+
+    
+
+    document.getElementById("player-count").textContent = "ready: " + playercount.toString(10) + "/" + content.length;
   }
 })();
