@@ -152,10 +152,15 @@ class ConnectionManager {
 
   socketOnClose(socket: WebSocket) {
     // TODO: don't instantly delete the player, give the client some time to refresh
+    console.log("socket closed :(");
     let token = this.sockets.get(socket);
     this.game.removePlayer(token);
     this.sockets.delete(socket);
-    this.updateClients();
+    if (!this.game.gameStarted) {
+      this.sendReadyState();
+    } else {
+      this.updateClients();
+    }
   }
 
   sendReadyState() {
@@ -179,7 +184,7 @@ class ConnectionManager {
 
   updateClients() {
     for (let socket of this.sockets) {
-      let packet : DataPacket;
+      let packet = {} as DataPacket;
       packet.type = DataType.GAMESTATE;
       packet.content = this.getGameState(socket[1]);
       socket[0].send(JSON.stringify(packet));
@@ -187,7 +192,7 @@ class ConnectionManager {
   }
 
   getGameState(token: string) : GingloidState {
-    let res : GingloidState;
+    let res = {} as GingloidState;
     let player = this.game.getPlayer(token);
     if (!player) {
       // invalid token -- skip out
@@ -199,7 +204,7 @@ class ConnectionManager {
 
     // hand
     for (let card of player.cards) {
-      let cardInfo : CardInfo;
+      let cardInfo = {} as CardInfo;
       cardInfo.color = card.color;
       cardInfo.value = card.value;
       cardInfo.id = card.id;
@@ -212,7 +217,7 @@ class ConnectionManager {
         continue;
       }
 
-      let playerInfo : PlayerInfo;
+      let playerInfo = {} as PlayerInfo;
       playerInfo.cards = player[1].cardCount;
       playerInfo.name = player[1].name;
       res.players.push(playerInfo);
@@ -220,7 +225,7 @@ class ConnectionManager {
 
     // discard
     for (let card of this.game.getDiscardPile().cards) {
-      let cardInfo : CardInfo;
+      let cardInfo = {} as CardInfo;
       cardInfo.color = card.color;
       cardInfo.value = card.value;
       cardInfo.id = card.id;
