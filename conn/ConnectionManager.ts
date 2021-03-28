@@ -38,6 +38,7 @@ class ConnectionManager {
     socket.on("message", (data: string) => { this.socketOnMessage(data, socket); })
     socket.on("close", () => { this.socketOnClose(socket); });
     console.log("new socket configured for " + name + ":" + token);
+    this.sendReadyState();
   }
 
   socketOnMessage(data: string, socket: WebSocket) {
@@ -166,7 +167,8 @@ class ConnectionManager {
       playerReadyState.push({ name: player.name, ready: this.ready.get(token) });
     }
 
-    let packet : DataPacket;
+    let packet = {} as DataPacket;
+    console.log("oops");
     packet.type = DataType.READYINFO;
     packet.content = playerReadyState;
 
