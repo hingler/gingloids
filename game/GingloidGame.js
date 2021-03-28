@@ -1,7 +1,7 @@
 const shuffle = require("./util/ShuffleArray");
 const GingloidPlayer = require("./GingloidPlayer");
 const { CardColor, CardValue, GingloidCard } = require("./GingloidCard");
-
+const generateId = require("./util/IDGenerator");
 const DiscardPile = require("./cardpile/DiscardPile");
 const DrawPile = require("./cardpile/DrawPile");
 
