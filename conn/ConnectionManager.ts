@@ -67,7 +67,6 @@ class ConnectionManager {
 
     // the socket is playing some card
     let res = JSON.parse(data);
-    console.log(res);
     // handle ready signal
 
     if (!res) {
@@ -81,7 +80,7 @@ class ConnectionManager {
     if (res && res.ready !== undefined) {
       if (!this.game.gameStarted) {
         // mark this player as ready
-        console.log("player " + playerToken + " readied up in game " + this.token);
+        console.log("player " + playerToken + (res.ready ? " readied" : " unreadied") + " in game " + this.token);
         // should pass this its own token
         this.ready.set(playerToken, res['ready']);
         this.sendReadyState();
@@ -94,6 +93,7 @@ class ConnectionManager {
         for (let r of this.ready.values()) {
           if (!r) {
             // bail if not everyone is ready
+            console.log("not all players in " + this.token + " are ready");
             return;
           }
         }
@@ -102,6 +102,8 @@ class ConnectionManager {
         this.game.startGame();
         // send everyone the game state
         this.updateClients();
+        // TODO: fix this logic -- these returns are a mess
+        return;
       } else {
         socket.send({
           type: DataType.ERROR,
@@ -147,7 +149,8 @@ class ConnectionManager {
       }
     }
 
-    console.log("bad input from player " + this.sockets.get(socket));
+    console.error("bad input from player " + this.sockets.get(socket));
+    console.error(res);
     socket.send(JSON.stringify({
       type: DataType.ERROR,
       content: "invalid input"
@@ -177,7 +180,6 @@ class ConnectionManager {
     }
 
     let packet = {} as DataPacket;
-    console.log("oops");
     packet.type = DataType.READYINFO;
     packet.content = playerReadyState;
 
@@ -205,6 +207,9 @@ class ConnectionManager {
 
     // name
     res.name = player.name;
+    res.hand = [];
+    res.players = [];
+    res.discard = [];
 
     // hand
     for (let card of player.cards) {
