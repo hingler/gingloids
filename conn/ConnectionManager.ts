@@ -26,6 +26,12 @@ class ConnectionManager {
   }
 
   addSocket(socket: WebSocket, name: string) {
+    if (this.game.gameStarted) {
+      socket.send(JSON.stringify({
+        type: DataType.ERROR,
+        "content": "game already started"
+      } as DataPacket));
+    }
     let token = this.game.generatePlayer(name);
     this.sockets.set(socket, token);
     this.ready.set(token, false);
@@ -98,6 +104,7 @@ class ConnectionManager {
           }
         }
 
+        console.log("game " + this.token + " starting!");
         // start the game if everyone is ready and...
         this.game.startGame();
         // send everyone the game state
