@@ -7,6 +7,7 @@ interface GingloidState {
   discard: Array<CardInfo>;
   draw: number;
   hand: Array<CardInfo>;
+  myturn: boolean;
 }
 
 /**
@@ -15,6 +16,7 @@ interface GingloidState {
 interface PlayerInfo {
   name: string;
   cards: number;
+  playing: boolean;
 }
 
 /**
