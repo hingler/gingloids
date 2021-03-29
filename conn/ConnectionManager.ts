@@ -69,6 +69,7 @@ class ConnectionManager {
     if (data.length > 262144) {
       socket.close(1009);
       this.game.removePlayer(playerToken);
+      this.ready.delete(this.sockets.get(socket));
       this.sockets.delete(socket);
       console.warn(playerToken + " closed for weird messages");
       this.updateClients();
@@ -196,6 +197,7 @@ class ConnectionManager {
     console.log("socket closed :(");
     let token = this.sockets.get(socket);
     this.game.removePlayer(token);
+    this.ready.delete(this.sockets.get(socket));
     this.sockets.delete(socket);
     if (!this.game.gameStarted) {
       this.sendReadyState();
