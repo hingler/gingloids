@@ -5,7 +5,7 @@ const express = require('express');
 const ws = require("ws");
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 // communicate via websocket
 // send game state
