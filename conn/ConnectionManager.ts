@@ -76,9 +76,9 @@ class ConnectionManager {
 
     // when a player joins, communicate the complete list of players which have joined.
 
-
     // the socket is playing some card
     let res = JSON.parse(data);
+    console.log(res);
     // handle ready signal
 
     if (!res) {
@@ -134,21 +134,35 @@ class ConnectionManager {
       switch(res['play']) {
         case "play":
           // user plays a card
-          if (res['card'] && res['opts']) {
+          if (res['card']) {
             let id = Number.parseInt(res['card']);
-            if (this.game.playCard(this.sockets.get(socket), id, res['opts'])) {
+            // assert that it is the player's turn
+            let token = this.sockets.get(socket);
+            if (this.game.getNextPlayer() !== token) {
+              console.log("out of order");
+              socket.send(JSON.stringify({
+                type: DataType.WARN,
+                content: "it's not your turn!"
+              } as DataPacket));
+              return;
+            }
+            // go!
+            if (this.game.playCard(token, id, res['opts'])) {
+              console.log("temporary");
               this.updateClients();
             } else {
               // formatting was valid, but it is not the user's turn
+              console.log("invalid play");
               socket.send(JSON.stringify({
-                type: DataType.ERROR,
-                content: "it's not your turn :("
+                type: DataType.WARN,
+                content: "invalid play :("
               } as DataPacket));
             }
           } else {
             // invalid format
+            console.log("invalid format");
             socket.send(JSON.stringify({
-              type: DataType.ERROR,
+              type: DataType.WARN,
               content: "invalid input"
             } as DataPacket));
           }
@@ -160,7 +174,7 @@ class ConnectionManager {
           } else {
             // not the player's turn to draw.
             socket.send(JSON.stringify({
-              type: DataType.ERROR,
+              type: DataType.WARN,
               content: "it's not your turn :("
             } as DataPacket));
           }
@@ -209,6 +223,7 @@ class ConnectionManager {
   }
 
   updateClients() {
+    console.log("updating clients!");
     for (let socket of this.sockets) {
       let packet = {} as DataPacket;
       packet.type = DataType.GAMESTATE;

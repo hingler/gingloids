@@ -31,14 +31,17 @@ class DiscardPile {
       }
     }
 
-    this.cards.push(card);
     if (card.value === CardValue.PICK || card.value === CardValue.PICKFOUR) {
       this.nextColor = opts.color;
       this.nextValue = CardValue.WILD;
+      // tweak the card's color to represent its newly set value
+      card.color = opts.color;
     } else {
       this.nextColor = card.color;
       this.nextValue = card.value;
     }
+
+    this.cards.push(card);
     return true;
   }
 

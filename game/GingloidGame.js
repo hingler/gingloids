@@ -203,12 +203,16 @@ class GingloidGame {
   advancePlayer() {
     this.nextPlayer += (this.reversed ? -1 : 1);
     while (this.nextPlayer < 0) {
-      this.nextPlayer += this.players.length;
+      this.nextPlayer += this.players.size;
     } 
     
-    while (this.nextPlayer >= this.players.length) {
-      this.nextPlayer -= this.players.length;
+    while (this.nextPlayer >= this.players.size) {
+      this.nextPlayer -= this.players.size;
     }
+
+    console.log(this.players.size);
+
+    console.log("NEXT PLAYER: " + this.nextPlayer);
   }
 
   /**
@@ -222,14 +226,17 @@ class GingloidGame {
   playCard(token, card, opts) {
     // verify that the token is associated with the player which is going next
     if (this.getNextPlayer() !== token) {
-      return;
+      console.log("invalid turn order!");
+      return false;
     }
 
     // verify that the card is in that player's hand
     let player = this.players.get(token);
-    let cardHand = player.findCardById(card.id);
-    if (!cardHand) {
+    let cardHand = player.findCardById(card);
+    console.log(player.cards);
+    if (cardHand === null) {
       // user claimed to have a card they don't have.
+      console.error("player played card that they don't own");
       return false;
     }
 
@@ -237,6 +244,7 @@ class GingloidGame {
     if (this.discardPile.discard(cardHand, opts)) {
       // card can be discarded -- play is valid!
       player.removeCard(cardHand.id);
+      console.log(cardHand);
   
       // handle its logic
       switch (cardHand.value) {
@@ -261,11 +269,13 @@ class GingloidGame {
           break;
       }
       
+      console.log("play was valid!");
       this.advancePlayer();
       return true;
     }
   
     // card could not be discarded -- invalid play
+    console.log("card was not a valid play");
     return false;
   }
 }

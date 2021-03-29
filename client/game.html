@@ -6,6 +6,7 @@
   <title>Gingloids</title>
   <meta charset="utf-8" />
   <meta name="description" content="play gingloids new card game" />
+  <script src="https://kit.fontawesome.com/5506e5416c.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://use.typekit.net/vlu1hrt.css" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
   <link type="text/css" rel="stylesheet" href="css/main2.css" />
@@ -38,7 +39,61 @@
     </div>
   </section>
   <section id="game-window">
-    
+    <section id="color-picker" class="hidden">
+      <p>Choose a color</p>
+      <div id="colors">
+        <div class="red" id="picker-red"></div>
+        <div class="blue" id="picker-blue"></div>
+        <div class="yellow" id="picker-yellow"></div>
+        <div class="green" id="picker-green"></div>
+      </div>
+    </section>
+    <section id="player-card-container">
+      <div class="player-card" id="opp1">
+        <h3 class="player-name">testoid</h3>
+      </div>
+      <div class="player-card" id="opp2">
+        <h3 class="player-name">testoid</h3>
+      </div>
+      <div class="player-card" id="opp3">
+        <h3 class="player-name">testoid</h3>
+      </div>
+      <div class="player-card" id="opp4">
+        <h3 class="player-name">testoid</h3>
+      </div>
+      <div class="player-card" id="opp5">
+        <h3 class="player-name">testoid</h3>
+      </div>
+      <div class="player-card" id="opp6">
+        <h3 class="player-name">testoid</h3>
+      </div>
+      <div class="player-card" id="opp7">
+        <h3 class="player-name">testoid</h3>
+      </div>
+      <div id="card-piles">
+        <section id="discard-pile">
+        </section>
+        <section id="draw-pile">
+          <div class="card-ext">
+            <div class="card-int">
+              <div class="digit-container">
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <section id="my-cards">
+        <div class="card-ext">
+          <div class="card-int">
+            <div class="digit-container">
+              <!-- <div class="card-digit-tr">+4</div>
+              <div class="card-digit-ct">+4</div>
+              <div class="card-digit-bl">+4</div> -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
   </section>
 </body>
 </html>

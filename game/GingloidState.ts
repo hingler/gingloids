@@ -32,6 +32,7 @@ enum DataType {
   READYINFO = "readyinfo",
   GAMESTATE = "gamestate",
   ERROR = "error",
+  WARN = "warning",
   GAMESTART = "gamestart"
 }
 
