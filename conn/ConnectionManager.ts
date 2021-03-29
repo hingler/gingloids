@@ -134,7 +134,7 @@ class ConnectionManager {
       switch(res['play']) {
         case "play":
           // user plays a card
-          if (res['card']) {
+          if (res['card'] !== undefined) {
             let id = Number.parseInt(res['card']);
             // assert that it is the player's turn
             let token = this.sockets.get(socket);
@@ -246,6 +246,8 @@ class ConnectionManager {
     res.players = [];
     res.discard = [];
 
+    res.myturn = (token === this.game.getNextPlayer());
+
     // hand
     for (let card of player.cards) {
       let cardInfo = {} as CardInfo;
@@ -264,6 +266,7 @@ class ConnectionManager {
       let playerInfo = {} as PlayerInfo;
       playerInfo.cards = player[1].cardCount;
       playerInfo.name = player[1].name;
+      playerInfo.playing = (player[0] === this.game.getNextPlayer());
       res.players.push(playerInfo);
     }
 
