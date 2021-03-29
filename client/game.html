@@ -12,28 +12,33 @@
   <script src="js/game.js"></script>
 </head>
 <body>
-  <section class="link-info">
-    <p>Game ID: <span id="game-id"></span></p>
-    <p>Share your link with other players!</p>
+  <section id="pre-game">
+    <section class="link-info">
+      <p>Game ID: <span id="game-id"></span></p>
+      <p>Share your link with other players!</p>
+    </section>
+    <div class="bg-black" id="name-entry-container">
+      <section class="name">
+        <h2>name entry</h2>
+        <div>
+          <input type="text" id="name-entry"/>
+          <button>confirm</button>
+        </div>
+      </section>
+    </div>
+    <div class="bg-black hidden" id="ready-screen-container">
+      <section id="player-list">
+      </section>
+      <button id="ready-button">ready</button>
+      <h2 id="player-count">connecting</h2>
+    </div>
+    <div class="bg-black hidden" id="error-container">
+      <p>#errorplaceholder#</p>
+      <h2>error</h2>
+    </div>
   </section>
-  <div class="bg-black" id="name-entry-container">
-    <section class="name">
-      <h2>name entry</h2>
-      <div>
-        <input type="text" id="name-entry"/>
-        <button>confirm</button>
-      </div>
-    </section>
-  </div>
-  <div class="bg-black hidden" id="ready-screen-container">
-    <section id="player-list">
-    </section>
-    <button id="ready-button">ready</button>
-    <h2 id="player-count">connecting</h2>
-  </div>
-  <div class="bg-black hidden" id="error-container">
-    <p>#errorplaceholder#</p>
-    <h2>error</h2>
-  </div>
+  <section id="game-window">
+    
+  </section>
 </body>
 </html>
