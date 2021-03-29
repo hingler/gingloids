@@ -260,6 +260,7 @@ class GingloidGame {
           this.drawCard(this.tokens[this.nextPlayer]);
           // can you combo off of a draw two?
           // i think its natural
+          break;
         case CardValue.PICKFOUR:
           this.advancePlayer();
           this.drawCard(this.tokens[this.nextPlayer]);
