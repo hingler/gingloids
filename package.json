@@ -12,6 +12,10 @@
     "type": "git",
     "url": "git+https://github.com/jamieboy1337/gingloids.git"
   },
+  "engines": {
+    "node": "12.x",
+    "npm": "6.x"
+  },
   "author": "jamieboy1337",
   "license": "ISC",
   "bugs": {
