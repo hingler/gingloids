@@ -141,6 +141,10 @@ h2 {
   position: relative;
 }
 
+#pre-game {
+  position: relative;
+}
+
 .link-info {
   position: absolute;
   top: 0;
@@ -250,4 +254,20 @@ button {
 .ready-state.ready {
   color: black;
   background-color: white;
+}
+
+#game-window {
+  position: absolute;
+  background-color: white;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0;
+  z-index: 15;
+  transition-duration: 1.2s;
+  transition-timing-function: cubic-bezier(0.7, 0.0, 0.3, 1.0);
+}
+
+#game-window.reveal {
+  width: 100%;
 }
