@@ -159,6 +159,7 @@ class ConnectionManager {
             // go!
             if (this.game.playCard(token, id, res['opts'])) {
               console.log("temporary");
+              // how do we notify the player that received cards from a draw two or draw four?
               this.updateClients();
             } else {
               // formatting was valid, but it is not the user's turn
@@ -244,6 +245,7 @@ class ConnectionManager {
   }
 
   getGameState(token: string) : GingloidState {
+    // todo: order player list s.t. the list starts immediately after the client whose state is being fetched.
     let res = {} as GingloidState;
     let player = this.game.getPlayer(token);
     if (!player) {
@@ -269,15 +271,20 @@ class ConnectionManager {
     }
 
     // players
-    for (let player of this.game.getPlayers()) {
-      if (player[0] === token) {
-        continue;
+    let start : number;
+    for (let i = 0; i < this.game.tokens.length; i++) {
+      if (this.game.tokens[i] === token) {
+        start = i;
       }
+    }
 
+    for (let i = ((start + 1) % this.game.tokens.length); i !== start; i = ((i + 1) % this.game.tokens.length)) {
+      let player = this.game.getPlayers().get(this.game.tokens[i]);
+      console.log(this.game.tokens[i]);
       let playerInfo = {} as PlayerInfo;
-      playerInfo.cards = player[1].cardCount;
-      playerInfo.name = player[1].name;
-      playerInfo.playing = (player[0] === this.game.getNextPlayer());
+      playerInfo.cards = player.cardCount;
+      playerInfo.name = player.name;
+      playerInfo.playing = (this.game.tokens[i] === this.game.getNextPlayer());
       res.players.push(playerInfo);
     }
 
