@@ -23,10 +23,21 @@ class SocketBroker {
   }
 
   cleanDeadGames() {
+    let deleteGames = [];
     for (let game of this.games) {
       if (game[1].sockets.size <= 0) {
-        this.games.delete(game[0]);
+        deleteGames.push(game[0]);
       }
+    }
+
+    for (let game of deleteGames) {
+      this.games.delete(game);
+
+      // some games are going to get unlucky
+      // and be deleted
+      
+      // extend interval time, store lifetime of game, delete after large amt of time
+      console.log("Deleted game " + game + " for inactivity");
     }
   }
 
