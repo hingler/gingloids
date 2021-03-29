@@ -31,7 +31,16 @@ class ConnectionManager {
         type: DataType.ERROR,
         "content": "game already started"
       } as DataPacket));
+      socket.close();
       return;
+    }
+
+    if (this.sockets.size >= 8) {
+      socket.send(JSON.stringify({
+        type: DataType.ERROR,
+        content: "player cap reached (8)"
+      } as DataPacket));
+      socket.close();
     }
 
     let token = this.game.generatePlayer(name);
