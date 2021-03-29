@@ -1,6 +1,7 @@
 (function() {
   const colors = (["red", "yellow", "blue", "green"]);
   let socket;
+  let timeout = -1;
   window.addEventListener("load", main);
 
   function main() {
@@ -113,13 +114,41 @@
         break;
       case "warning":
         console.warn("WARNING: " + packet.content);
+        warn(packet.content);
         break;
     }
   }
 
+  function warn(content) {
+    // display a warning message
+    // hide it in 5 seconds
+    // note: we want to cancel the hide function if we come back again
+    clearTimeout(timeout);
+    let warn = document.getElementById("warn");
+    const removeFunc = () => {
+      warn.classList.add("hidden");
+    }
+
+    warn.textContent = content;
+    warn.classList.remove("hidden");
+    timeout = setTimeout(removeFunc, 5000);
+
+  }
+
   function updateGameState(content) {
+    if (content.myturn) {
+      document.getElementById("game-window").classList.add("myturn");
+    } else {
+      document.getElementById("game-window").classList.remove("myturn");
+    }
+
     for (let i = 0; i < content.players.length; i++) {
       let opponentElem = document.getElementById("opp" + (i + 1));
+      if (content.players[i].playing) {
+        opponentElem.classList.add("playing");
+      } else {
+        opponentElem.classList.remove("playing");
+      }
       // remove all cards
       let cards = opponentElem.querySelectorAll(".card-ext");
       for (let card of cards) {

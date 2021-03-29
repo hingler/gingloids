@@ -265,8 +265,12 @@ button {
   height: 100%;
   width: 0;
   z-index: 15;
-  transition-duration: 1.2s;
+  transition-duration: 0.75s;
   transition-timing-function: cubic-bezier(0.7, 0.0, 0.3, 1.0);
+}
+
+#game-window.myturn {
+  background-color: black;
 }
 
 #player-card-container {
@@ -449,6 +453,11 @@ button {
   position: absolute;
 }
 
+.player-card.playing .player-name {
+  background-color: black;
+  color: white;
+}
+
 #opp1 {
   bottom: 32px;
   left: 32px;
@@ -518,3 +527,19 @@ button {
   border-radius: 100%;
   border: 4px solid black;
 }
+
+#warn {
+  position: absolute;
+  text-align: right;
+  right: 16px;
+  bottom: 16px;
+  font-family: "Roboto Mono", monospace;
+  transition-duration: inherit;
+  transition-timing-function: inherit;
+  color: black;
+}
+
+.myturn #warn {
+  color: white;
+}
+
