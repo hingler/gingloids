@@ -31,8 +31,14 @@ class ConnectionManager {
         type: DataType.ERROR,
         "content": "game already started"
       } as DataPacket));
+      return;
     }
+
     let token = this.game.generatePlayer(name);
+    if (token === null) {
+      console.error("this should be caught by the above :sade:");
+    }
+
     this.sockets.set(socket, token);
     this.ready.set(token, false);
     // return the token to the user
@@ -96,10 +102,11 @@ class ConnectionManager {
           return;
         }
 
-        for (let r of this.ready.values()) {
-          if (!r) {
+        for (let r of this.ready) {
+          if (!r[1]) {
             // bail if not everyone is ready
             console.log("not all players in " + this.token + " are ready");
+            console.log("player " + r[0]);
             return;
           }
         }
@@ -107,6 +114,12 @@ class ConnectionManager {
         console.log("game " + this.token + " starting!");
         // start the game if everyone is ready and...
         this.game.startGame();
+        for (let conn of this.sockets.keys()) {
+          conn.send(JSON.stringify({
+            type: DataType.GAMESTART,
+            content: "Game is beginning"
+          } as DataPacket));
+        }
         // send everyone the game state
         this.updateClients();
         // TODO: fix this logic -- these returns are a mess

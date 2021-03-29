@@ -100,7 +100,10 @@
       case "readyinfo":
         console.log("READYINFO");
         updateReadyState(packet.content);
-        break;1
+        break;
+      case "gamestart":
+        document.getElementById("game-window").classList.add("reveal");
+        break;
       case "error":
         console.warn("Error occured.");
         handleError(packet.content);
