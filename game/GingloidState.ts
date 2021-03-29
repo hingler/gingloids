@@ -31,7 +31,8 @@ enum DataType {
   TOKEN = "token",
   READYINFO = "readyinfo",
   GAMESTATE = "gamestate",
-  ERROR = "error"
+  ERROR = "error",
+  GAMESTART = "gamestart"
 }
 
 /**
