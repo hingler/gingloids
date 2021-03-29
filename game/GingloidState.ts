@@ -38,6 +38,14 @@ enum DataType {
   GAMESTART = "gamestart"
 }
 
+interface PlayResult {
+  global: string,
+  local: {
+    affectedToken: string,
+    result: string
+  }
+}
+
 /**
  * Used to send messages to the client.
  */
@@ -46,4 +54,4 @@ interface DataPacket {
   content: any;
 }
 
-export { GingloidState, PlayerInfo, CardInfo, DataType, DataPacket };
+export { GingloidState, PlayerInfo, CardInfo, DataType, DataPacket, PlayResult };

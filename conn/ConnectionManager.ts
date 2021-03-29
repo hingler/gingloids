@@ -1,6 +1,6 @@
 import * as WebSocket from "ws";
 import { GingloidGame } from "../game/GingloidGame";
-import { GingloidState, CardInfo, PlayerInfo, DataType, DataPacket } from "../game/GingloidState";
+import { GingloidState, CardInfo, PlayerInfo, DataType, DataPacket, PlayResult } from "../game/GingloidState";
 import { GingloidJoinGamePacket } from "../client/GingloidRequestFormat"
 
 enum GameState {
@@ -157,10 +157,11 @@ class ConnectionManager {
               return;
             }
             // go!
-            if (this.game.playCard(token, id, res['opts'])) {
+            let packet = this.game.playCard(token, id, res['opts']);
+            if (packet) {
               console.log("temporary");
+              this.updateClients(packet as PlayResult);
               // how do we notify the player that received cards from a draw two or draw four?
-              this.updateClients();
             } else {
               // formatting was valid, but it is not the user's turn
               console.log("invalid play");
@@ -234,9 +235,25 @@ class ConnectionManager {
     }
   }
 
-  updateClients() {
+  updateClients(infoPacket?: PlayResult) {
     console.log("updating clients!");
     for (let socket of this.sockets) {
+      // warn first
+      let warnmsg = "";
+      if (infoPacket && infoPacket.global.length > 0) {
+        warnmsg += infoPacket.global;
+      }
+
+      if (infoPacket && infoPacket.local.affectedToken === socket[1]) {
+        warnmsg += "\n" + infoPacket.local.result;
+      }
+
+      // warn clients of possible byproducts before sending update
+      socket[0].send(JSON.stringify({
+        type: DataType.WARN,
+        content: warnmsg
+      } as DataPacket));
+      
       let packet = {} as DataPacket;
       packet.type = DataType.GAMESTATE;
       packet.content = this.getGameState(socket[1]);

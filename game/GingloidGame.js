@@ -4,6 +4,7 @@ const { CardColor, CardValue, GingloidCard } = require("./GingloidCard");
 const generateId = require("./util/IDGenerator");
 const DiscardPile = require("./cardpile/DiscardPile");
 const DrawPile = require("./cardpile/DrawPile");
+const { PlayResult } = require("./GingloidState");
 
 
 class GingloidGame {
@@ -221,7 +222,7 @@ class GingloidGame {
    * @param {number} card - id of the card being played by the player
    * @param {Object} opts - additional options for cards.
    * @param {CardColor} opts.color - if a color pick card is played, specifies which color should be used next.
-   * @returns true if the card played is considered valid, false otherwise.
+   * @returns {PlayResult | boolean} truthy if play is valid, falsy if not.
    */
   playCard(token, card, opts) {
     // verify that the token is associated with the player which is going next
@@ -231,6 +232,13 @@ class GingloidGame {
     }
 
     // verify that the card is in that player's hand
+    let returnPacket = {
+      global: "",
+      local: {
+        affectedToken: "",
+        result: ""
+      }
+    };
     let player = this.players.get(token);
     let cardHand = player.findCardById(card);
     console.log(player.cards);
@@ -250,14 +258,22 @@ class GingloidGame {
       switch (cardHand.value) {
         case CardValue.SKIP:
           this.advancePlayer();
+          returnPacket.local.affectedToken = this.getNextPlayer();
+          returnPacket.local.result = this.getPlayer(token).name + " skipped you!";
           break;
         case CardValue.REVERSE:
           this.reversed = !this.reversed;
+          returnPacket.global = this.getPlayer(token).name + " reversed flow of gameplay!";
           break;
         case CardValue.DRAWTWO:
           this.advancePlayer();
           this.drawCard(this.tokens[this.nextPlayer]);
           this.drawCard(this.tokens[this.nextPlayer]);
+          returnPacket.local.affectedToken = this.getNextPlayer();
+          returnPacket.local.result = this.getPlayer(token).name + " forced you to draw two cards!";
+          // how do we warn the player that receives these cards?
+          // return some add'l data indicating the token of the player receiving these cards?
+          // idk
           // can you combo off of a draw two?
           // i think its natural
           break;
@@ -267,12 +283,18 @@ class GingloidGame {
           this.drawCard(this.tokens[this.nextPlayer]);
           this.drawCard(this.tokens[this.nextPlayer]);
           this.drawCard(this.tokens[this.nextPlayer]);
+          returnPacket.global = this.getPlayer(token).name + " changed play color to " + opts.color + "!";
+          returnPacket.local.affectedToken = this.getNextPlayer();
+          returnPacket.local.result = this.getPlayer(token).name + " forced you to draw four cards!";
+          break;
+        case CardValue.PICK:
+          returnPacket.global = returnPacket.global = this.getPlayer(token).name + " changed play color to " + opts.color + "!";
           break;
       }
       
       console.log("play was valid!");
       this.advancePlayer();
-      return true;
+      return returnPacket;
     }
   
     // card could not be discarded -- invalid play

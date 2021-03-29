@@ -537,6 +537,7 @@ button {
   transition-duration: inherit;
   transition-timing-function: inherit;
   color: black;
+  white-space: pre-line;
 }
 
 .myturn #warn {
