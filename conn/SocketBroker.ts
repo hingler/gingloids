@@ -99,7 +99,7 @@ class SocketBroker {
       let game = this.games.get(result['game']);
       if (game) {
         console.log("new player: " + result['name']);
-        game.addSocket(socket, result['name']);
+        game.addSocket(socket, result['name'], result['token']);
         this.sockets.delete(socket);
         return;
       }

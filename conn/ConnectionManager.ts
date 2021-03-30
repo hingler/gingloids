@@ -18,6 +18,7 @@ class ConnectionManager {
   ready: Map<string, boolean>;
   token: string;
   creationTime: number;
+  disconnectedPlayers: Map<string, NodeJS.Timeout>;
 
   constructor(token: string) {
     this.game = new GingloidGame();
@@ -25,6 +26,7 @@ class ConnectionManager {
     this.ready = new Map();
     this.token = token;
     this.creationTime = Date.now();
+    this.disconnectedPlayers = new Map();
   }
 
   /**
@@ -34,7 +36,32 @@ class ConnectionManager {
     return (Date.now() - this.creationTime) / 1000;
   }
 
-  addSocket(socket: WebSocket, name: string) {
+  addSocket(socket: WebSocket, name: string, playerToken?: string) {
+    if (playerToken) {
+      // check our token list to see if the token we want still exists
+      let socketOld : WebSocket;
+      for (let entry of this.sockets) {
+        if (entry[1] === playerToken) {
+          // old record for this socket
+          socketOld = entry[0];
+        }
+      }
+
+      if (socketOld) {
+        this.sockets.delete(socketOld);
+        clearTimeout(this.disconnectedPlayers.get(playerToken));
+        this.disconnectedPlayers.delete(playerToken);
+        this.sockets.set(socket, playerToken);
+        console.log("token " + playerToken + " reconnected!");
+        socket.on("message", (data: string) => { this.socketOnMessage(data, socket); })
+        socket.on("close", () => { this.socketOnClose(socket); });
+        this.updateClients();
+        // if the player token is invalid, we'll try to squeeze them in the normal way
+        return;
+      }
+
+    }
+
     if (this.game.gameStarted) {
       socket.send(JSON.stringify({
         type: DataType.ERROR,
@@ -144,10 +171,10 @@ class ConnectionManager {
         // TODO: fix this logic -- these returns are a mess
         return;
       } else {
-        socket.send({
+        socket.send(JSON.stringify({
           type: DataType.ERROR,
           content: "game already started"
-        } as DataPacket);
+        } as DataPacket));
       }
     } else if (res && res['play']) {
       switch(res['play']) {
@@ -214,16 +241,33 @@ class ConnectionManager {
 
   socketOnClose(socket: WebSocket) {
     // TODO: don't instantly delete the player, give the client some time to refresh
-    console.log("socket closed :(");
     let token = this.sockets.get(socket);
-    this.game.removePlayer(token);
-    this.ready.delete(this.sockets.get(socket));
-    this.sockets.delete(socket);
-    if (!this.game.gameStarted) {
-      this.sendReadyState();
-    } else {
-      this.updateClients();
-    }
+    let oldName = this.game.getPlayer(token).name;
+    console.log("socket for player " + oldName + ":" + token + " closed!");
+    let handle = setTimeout(() => {
+      // remove record of this player
+      this.disconnectedPlayers.delete(token);
+      this.game.removePlayer(token);
+      this.ready.delete(this.sockets.get(socket));
+      this.sockets.delete(socket);
+      
+      if (!this.game.gameStarted) {
+        this.sendReadyState();
+      } else {
+        this.updateClients({
+          global: "Player " + oldName + " disconnected :(",
+          local: {
+            affectedToken: "",
+            result: ""
+          }
+        } as PlayResult);
+      }
+
+      console.log("player " + oldName + ":" + token + " disconnected");
+
+    }, 15000);
+
+    this.disconnectedPlayers.set(token, handle);
   }
 
   sendReadyState() {
@@ -247,6 +291,7 @@ class ConnectionManager {
   updateClients(infoPacket?: PlayResult) {
     console.log("updating clients!");
     for (let socket of this.sockets) {
+      console.log("player this one: " + socket[1]);
       // warn first
       let warnmsg = "";
       if (infoPacket && infoPacket.global.length > 0) {
@@ -268,6 +313,8 @@ class ConnectionManager {
       packet.content = this.getGameState(socket[1]);
       socket[0].send(JSON.stringify(packet));
     }
+
+    console.log("finished updating clients");
   }
 
   getGameState(token: string) : GingloidState {
