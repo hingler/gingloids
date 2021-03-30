@@ -37,8 +37,6 @@ class ConnectionManager {
   }
 
   addSocket(socket: WebSocket, name: string, playerToken?: string) {
-    // check if the socket maps to a token which is already known
-    // if it does, hook it back up!
     if (playerToken) {
       // check our token list to see if the token we want still exists
       let socketOld : WebSocket;
@@ -55,11 +53,13 @@ class ConnectionManager {
         this.disconnectedPlayers.delete(playerToken);
         this.sockets.set(socket, playerToken);
         console.log("token " + playerToken + " reconnected!");
+        socket.on("message", (data: string) => { this.socketOnMessage(data, socket); })
+        socket.on("close", () => { this.socketOnClose(socket); });
         this.updateClients();
+        // if the player token is invalid, we'll try to squeeze them in the normal way
+        return;
       }
 
-      // if the player token is invalid, we'll try to squeeze them in the normal way
-      return;
     }
 
     if (this.game.gameStarted) {
@@ -291,6 +291,7 @@ class ConnectionManager {
   updateClients(infoPacket?: PlayResult) {
     console.log("updating clients!");
     for (let socket of this.sockets) {
+      console.log("player this one: " + socket[1]);
       // warn first
       let warnmsg = "";
       if (infoPacket && infoPacket.global.length > 0) {
@@ -312,6 +313,8 @@ class ConnectionManager {
       packet.content = this.getGameState(socket[1]);
       socket[0].send(JSON.stringify(packet));
     }
+
+    console.log("finished updating clients");
   }
 
   getGameState(token: string) : GingloidState {
