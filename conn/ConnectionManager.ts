@@ -55,6 +55,7 @@ class ConnectionManager {
         this.disconnectedPlayers.delete(playerToken);
         this.sockets.set(socket, playerToken);
         console.log("token " + playerToken + " reconnected!");
+        this.updateClients();
       }
 
       // if the player token is invalid, we'll try to squeeze them in the normal way
