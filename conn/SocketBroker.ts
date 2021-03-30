@@ -25,7 +25,7 @@ class SocketBroker {
   cleanDeadGames() {
     let deleteGames = [];
     for (let game of this.games) {
-      if (game[1].sockets.size <= 0) {
+      if (game[1].sockets.size <= 0 && game[1].getLifetime() > 300) {
         deleteGames.push(game[0]);
       }
     }

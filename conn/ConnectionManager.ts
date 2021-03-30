@@ -17,12 +17,21 @@ class ConnectionManager {
   sockets: Map<WebSocket, string>;
   ready: Map<string, boolean>;
   token: string;
+  creationTime: number;
 
   constructor(token: string) {
     this.game = new GingloidGame();
     this.sockets = new Map();
     this.ready = new Map();
     this.token = token;
+    this.creationTime = Date.now();
+  }
+
+  /**
+   * @returns The number of seconds elapsed since this game was created.
+   */
+  getLifetime() : number {
+    return (Date.now() - this.creationTime) / 1000;
   }
 
   addSocket(socket: WebSocket, name: string) {
