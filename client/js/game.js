@@ -2,6 +2,10 @@
   const colors = (["red", "yellow", "blue", "green"]);
   let socket;
   let timeout = -1;
+  let errbit = false;
+  let globalPlayerToken = "";
+  let globalGame = "";
+  let globalName = "";
   window.addEventListener("load", main);
 
   function main() {
@@ -31,12 +35,7 @@
     return game;
   }
 
-  /**
-   * Creates the web socket used to communicate with the game server.
-   */
-  function createWebSocket() {
-    console.log("cool!");
-    document.querySelector("#name-entry-container button").removeEventListener("click", createWebSocket);
+  function createSocket() {
     let socketUrl = "";
     if (window.location.protocol === "https:") {
       socketUrl += "wss://";
@@ -47,13 +46,24 @@
     socketUrl += window.location.host;
     console.log(socketUrl);
     socket = new WebSocket(socketUrl);
-    
+  }
+
+  /**
+   * Creates the web socket used to communicate with the game server.
+   */
+  function createWebSocket() {
+    console.log("cool!");
+    document.querySelector("#name-entry-container button").removeEventListener("click", createWebSocket);
+    createSocket();
     let name = document.getElementById("name-entry").value;
     if (!name || name.length <= 0) {
       name = "Default Daniel";
     }
 
+    globalName = name;
+
     let game = getId();
+    globalGame = game;
 
     if (game.length === 0) {
       console.error("no game id found!");
@@ -68,10 +78,33 @@
       };
 
       socket.addEventListener("message", socketHandleEvent);
+      socket.addEventListener("close", recoverSocket);
       document.getElementById("ready-screen-container").classList.remove("hidden");
       document.getElementById("name-entry-container").classList.add("hidden");
       // add event listener to button
       document.getElementById("ready-button").addEventListener("click", readyUp);
+    }
+  }
+
+  function recoverSocket() {
+    if (!errbit) {
+      // socket closed by chance
+      // attempt to recreate socket
+      createSocket();
+
+      let packet = {
+        "name": globalName,
+        "game": globalGame,
+        "token": globalPlayerToken
+      }
+
+      socket.onopen = () => {
+        socket.send(JSON.stringify(packet));
+        console.log("socket recovered?");
+      };
+
+      socket.addEventListener("message", socketHandleEvent);
+      socket.addEventListener("close", recoverSocket);
     }
   }
 
@@ -99,11 +132,14 @@
     let packet = JSON.parse(event.data);
     console.log(packet.content);
     switch (packet.type) {
+      case "token":
+        globalPlayerToken = packet.content;
       case "readyinfo":
         console.log("READYINFO");
         updateReadyState(packet.content);
         break;
       case "gamestart":
+        document.getElementById("ready-button").removeEventListener("click", readyUp);
         document.getElementById("game-window").classList.add("reveal");
         break;
       case "gamestate":
@@ -414,6 +450,7 @@
   }
 
   function handleError(content) {
+    errbit = true;
     console.error(content);
     socket.close();
     document.querySelector("#error-container p").textContent = content;
