@@ -35,6 +35,8 @@ class GingloidGame {
 
     // true if the game is over!
     this.gameEnded = false;
+
+    this.cardCount = 0;
   }
 
   /**
@@ -91,14 +93,7 @@ class GingloidGame {
     return false;
   }
 
-  /**
-   * Starts a game of Gingloids.
-   */
-  startGame() {
-    this.gameStarted = true;
-    // set up draw pile
-      // generate cards
-    let cardid = 0;
+  fillDrawPile() {
     for (let color in CardColor) {
       if (CardColor.hasOwnProperty(color)) {
         let col = CardColor[color];
@@ -109,16 +104,26 @@ class GingloidGame {
               continue;
             }
 
-            this.drawPile.addCard(new GingloidCard(col, str, cardid++));
+            this.drawPile.addCard(new GingloidCard(col, str, this.cardCount++));
             if (str !== CardValue.ZERO
               && str !== CardValue.PICK
               && str !== CardValue.PICKFOUR) {
-                this.drawPile.addCard(new GingloidCard(col, str, cardid++));
+                this.drawPile.addCard(new GingloidCard(col, str, this.cardCount++));
             }
           }
         }
       }
     }
+  }
+
+  /**
+   * Starts a game of Gingloids.
+   */
+  startGame() {
+    this.gameStarted = true;
+    // set up draw pile
+      // generate cards
+    this.fillDrawPile();
     
     // shuffle the deck
     this.drawPile.shuffleDeck();
@@ -188,13 +193,8 @@ class GingloidGame {
       }
 
       if (this.drawPile.empty()) {
-        for (let card of this.discardPile.getCards()) {
-          this.drawPile.addCard(card);
-        }
-
-        this.discardPile.clear();
+        this.fillDrawPile();
         this.drawPile.shuffleDeck();
-        this.prepareDiscardPile();
       }
 
       this.players.get(token).addCard(this.drawPile.drawCard());
