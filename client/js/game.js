@@ -134,6 +134,7 @@
     switch (packet.type) {
       case "token":
         globalPlayerToken = packet.content;
+        break;
       case "readyinfo":
         console.log("READYINFO");
         updateReadyState(packet.content);
