@@ -35,12 +35,14 @@ enum DataType {
   GAMESTATE = "gamestate",
   ERROR = "error",
   WARN = "warning",
-  GAMESTART = "gamestart"
+  GAMESTART = "gamestart",
+  GAMEEND = "gameend"
 }
 
 interface PlayResult {
-  global: string,
-  local: {
+  win: string,     // contains winner msg if player one on last turn -- else, empty
+  global: string,   // global notification
+  local: {          // local notification for a single player
     affectedToken: string,
     result: string
   }

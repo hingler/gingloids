@@ -159,7 +159,17 @@
         console.warn("WARNING: " + packet.content);
         warn(packet.content);
         break;
+      case "gameend":
+        console.log("GAME OVER");
+        handleGameEnding(packet.content);
     }
+  }
+
+  function handleGameEnding(content) {
+    document.getElementById("win-msg").textContent = content;
+    document.getElementById("win-container").classList.add("reveal");
+    // place content in win text
+    // start transition to reveal win screen
   }
 
   function warn(content) {

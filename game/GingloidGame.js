@@ -32,6 +32,9 @@ class GingloidGame {
 
     // true if we are going in reverse order -- false otherwise
     this.reversed = false;
+
+    // true if the game is over!
+    this.gameEnded = false;
   }
 
   /**
@@ -233,6 +236,7 @@ class GingloidGame {
 
     // verify that the card is in that player's hand
     let returnPacket = {
+      win: "",
       global: "",
       local: {
         affectedToken: "",
@@ -253,48 +257,54 @@ class GingloidGame {
       // card can be discarded -- play is valid!
       player.removeCard(cardHand.id);
       console.log(cardHand);
-  
-      // handle its logic
-      switch (cardHand.value) {
-        case CardValue.SKIP:
-          this.advancePlayer();
-          returnPacket.local.affectedToken = this.getNextPlayer();
-          returnPacket.local.result = this.getPlayer(token).name + " skipped you!";
-          break;
-        case CardValue.REVERSE:
-          this.reversed = !this.reversed;
-          returnPacket.global = this.getPlayer(token).name + " reversed flow of gameplay!";
-          break;
-        case CardValue.DRAWTWO:
-          this.advancePlayer();
-          this.drawCard(this.tokens[this.nextPlayer]);
-          this.drawCard(this.tokens[this.nextPlayer]);
-          returnPacket.local.affectedToken = this.getNextPlayer();
-          returnPacket.local.result = this.getPlayer(token).name + " forced you to draw two cards!";
-          // how do we warn the player that receives these cards?
-          // return some add'l data indicating the token of the player receiving these cards?
-          // idk
-          // can you combo off of a draw two?
-          // i think its natural
-          break;
-        case CardValue.PICKFOUR:
-          this.advancePlayer();
-          this.drawCard(this.tokens[this.nextPlayer]);
-          this.drawCard(this.tokens[this.nextPlayer]);
-          this.drawCard(this.tokens[this.nextPlayer]);
-          this.drawCard(this.tokens[this.nextPlayer]);
-          returnPacket.global = this.getPlayer(token).name + " changed play color to " + opts.color + "!";
-          returnPacket.local.affectedToken = this.getNextPlayer();
-          returnPacket.local.result = this.getPlayer(token).name + " forced you to draw four cards!";
-          break;
-        case CardValue.PICK:
-          returnPacket.global = returnPacket.global = this.getPlayer(token).name + " changed play color to " + opts.color + "!";
-          break;
+      if (player.cards.length <= 0) {
+        // the game ended
+        returnPacket.win = player.name + " wins!";
+        this.gameEnded = true;
+        return returnPacket;
+      } else {
+        // handle its logic
+        switch (cardHand.value) {
+          case CardValue.SKIP:
+            this.advancePlayer();
+            returnPacket.local.affectedToken = this.getNextPlayer();
+            returnPacket.local.result = this.getPlayer(token).name + " skipped you!";
+            break;
+          case CardValue.REVERSE:
+            this.reversed = !this.reversed;
+            returnPacket.global = this.getPlayer(token).name + " reversed flow of gameplay!";
+            break;
+          case CardValue.DRAWTWO:
+            this.advancePlayer();
+            this.drawCard(this.tokens[this.nextPlayer]);
+            this.drawCard(this.tokens[this.nextPlayer]);
+            returnPacket.local.affectedToken = this.getNextPlayer();
+            returnPacket.local.result = this.getPlayer(token).name + " forced you to draw two cards!";
+            // how do we warn the player that receives these cards?
+            // return some add'l data indicating the token of the player receiving these cards?
+            // idk
+            // can you combo off of a draw two?
+            // i think its natural
+            break;
+          case CardValue.PICKFOUR:
+            this.advancePlayer();
+            this.drawCard(this.tokens[this.nextPlayer]);
+            this.drawCard(this.tokens[this.nextPlayer]);
+            this.drawCard(this.tokens[this.nextPlayer]);
+            this.drawCard(this.tokens[this.nextPlayer]);
+            returnPacket.global = this.getPlayer(token).name + " changed play color to " + opts.color + "!";
+            returnPacket.local.affectedToken = this.getNextPlayer();
+            returnPacket.local.result = this.getPlayer(token).name + " forced you to draw four cards!";
+            break;
+          case CardValue.PICK:
+            returnPacket.global = returnPacket.global = this.getPlayer(token).name + " changed play color to " + opts.color + "!";
+            break;
+        }
+        
+        console.log("play was valid!");
+        this.advancePlayer();
+        return returnPacket;
       }
-      
-      console.log("play was valid!");
-      this.advancePlayer();
-      return returnPacket;
     }
   
     // card could not be discarded -- invalid play
