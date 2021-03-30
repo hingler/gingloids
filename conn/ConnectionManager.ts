@@ -193,6 +193,14 @@ class ConnectionManager {
               return;
             }
             // go!
+            if (this.game.gameEnded) {
+              console.log("game is over");
+              socket.send(JSON.stringify({
+                type: DataType.WARN,
+                content: "game has ended"
+              } as DataPacket));
+              return;
+            }
             let packet = this.game.playCard(token, id, res['opts']);
             if (packet) {
               console.log("temporary");
@@ -255,6 +263,7 @@ class ConnectionManager {
         this.sendReadyState();
       } else {
         this.updateClients({
+          win: "",
           global: "Player " + oldName + " disconnected :(",
           local: {
             affectedToken: "",
@@ -300,6 +309,14 @@ class ConnectionManager {
 
       if (infoPacket && infoPacket.local.affectedToken === socket[1]) {
         warnmsg += "\n" + infoPacket.local.result;
+      }
+
+      if (infoPacket && infoPacket.win.length > 0) {
+        // figure out which player won
+        socket[0].send(JSON.stringify({
+          type: DataType.GAMEEND,
+          content: infoPacket.win
+        } as DataPacket));
       }
 
       // warn clients of possible byproducts before sending update
