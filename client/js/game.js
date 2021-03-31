@@ -61,6 +61,10 @@
       name = "Default Daniel";
     }
 
+    if (name.length > 25) {
+      name = name.substr(0, 25);
+    }
+
     globalName = name;
 
     let game = getId();
