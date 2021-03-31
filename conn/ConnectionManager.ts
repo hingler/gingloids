@@ -225,7 +225,26 @@ class ConnectionManager {
 
           return;
         case "draw":
+          let player = this.game.getPlayer(this.sockets.get(socket));
           if (this.game.drawCard(this.sockets.get(socket))) {
+            if (player.cards.length >= 120 && player.cards.length < 150) {
+              socket.send(JSON.stringify({
+                type: DataType.WARN,
+                content: "can you please stop"
+              }));
+            } else if (player.cards.length >= 150 && player.cards.length < 169) {
+              socket.send(JSON.stringify({
+                type: DataType.WARN,
+                content: "last chance!"
+              }));
+            } else if (player.cards.length >= 169) {
+              for (let playerSocket of this.sockets) {
+                playerSocket[0].send(JSON.stringify({
+                  type: DataType.ERROR,
+                  content: player.name + " ruined the game for everyone :("
+                }));
+              }
+            }
             this.updateClients();
           } else {
             // not the player's turn to draw.
@@ -320,10 +339,12 @@ class ConnectionManager {
       }
 
       // warn clients of possible byproducts before sending update
-      socket[0].send(JSON.stringify({
-        type: DataType.WARN,
-        content: warnmsg
-      } as DataPacket));
+      if (warnmsg.length > 0) {
+        socket[0].send(JSON.stringify({
+          type: DataType.WARN,
+          content: warnmsg
+        } as DataPacket));
+      }
       
       let packet = {} as DataPacket;
       packet.type = DataType.GAMESTATE;
